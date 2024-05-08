@@ -65,11 +65,13 @@ func (c1 *Color) Equals(c2 *Color) bool {
 		equals(c1.Green(), c2.Green()) && equals(c1.Blue(), c2.Blue())
 }
 
-func (c1 *Color) ToRGB(maxValues int) (int, int, int) {
-	red := ConvertFloatToColorValue(c1.Red(), maxValues)
-	green := ConvertFloatToColorValue(c1.Blue(), maxValues)
-	blue := ConvertFloatToColorValue(c1.Green(), maxValues)
-	return red, blue, green
+func (c1 *Color) ToRGB(maxValues int) []int {
+
+	rgb := make([]int, 3)
+	rgb[0] = ConvertFloatToColorValue(c1.Red(), maxValues)
+	rgb[1] = ConvertFloatToColorValue(c1.Green(), maxValues)
+	rgb[2] = ConvertFloatToColorValue(c1.Blue(), maxValues)
+	return rgb
 }
 
 func ConvertFloatToColorValue(f float64, maxValue int) int {

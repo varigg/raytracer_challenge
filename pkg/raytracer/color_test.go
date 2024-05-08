@@ -47,8 +47,8 @@ func TestFloatToColorValue(t *testing.T) {
 
 func TestToRGB(t *testing.T) {
 	c1 := raytracer.NewColor(1, 0.2, 0.4)
-	r, g, b := c1.ToRGB(255)
-	assert.Equal(t, 255, r)
-	assert.Equal(t, 51, g)
-	assert.Equal(t, 102, b)
+	rgb := c1.ToRGB(255)
+	assert.Equal(t, 255, rgb[0])
+	assert.Equal(t, 51, rgb[1])
+	assert.Equal(t, 102, rgb[2])
 }

@@ -1,7 +1,6 @@
 package raytracer
 
 import (
-	"bytes"
 	"fmt"
 	"io"
 )
@@ -32,54 +31,47 @@ func (c *Canvas) Get(x, y int) *Color {
 }
 
 func (c *Canvas) Set(x, y int, color *Color) {
-	fmt.Printf("setting %d, %d to %f,%f,%f\n", x, y, color.red, color.blue, color.green)
 	c.pixels[x][y] = *color
 }
 
-func (c *Canvas) ToPPM(writer io.Writer) (int, error) {
-	ppm := fmt.Sprintf("P3\n%d %d\n%d\n", c.Width, c.Height, MAX_COLORS-1)
-	length := 0
-	n, err := writer.Write([]byte(ppm))
-	length += n
-	if err != nil {
-		return length, err
-	}
-	for y := range len(c.pixels[0]) {
-		line := RowToString(y, c.pixels)
-		//fmt.Println(line)
-		n, err = writer.Write([]byte(line))
-		length += n
-		if err != nil {
-			return length, err
+func (c *Canvas) Pixels() []*Color {
+	pixels := make([]*Color, 0)
+	for y := range c.Height - 1 {
+		for x := range c.Width - 1 {
+			pixels = append(pixels, c.Get(x, y))
 		}
 	}
-	return length, nil
+	return pixels
 }
-func RowToString(row int, pixels [][]Color) []byte {
-	convertedRow := make([]string, 0)
-	for x := range len(pixels) {
-		r, g, b := pixels[x][row].ToRGB(MAX_COLORS - 1)
-		convertedRow = append(convertedRow, fmt.Sprintf("%d", r))
-		convertedRow = append(convertedRow, fmt.Sprintf("%d", g))
-		convertedRow = append(convertedRow, fmt.Sprintf("%d", b))
+
+func (c *Canvas) ToPPM(writer io.Writer) error {
+	ppm := fmt.Sprintf("P3\n%d %d\n%d\n", c.Width, c.Height, MAX_COLORS-1)
+	_, err := writer.Write([]byte(ppm))
+	if err != nil {
+		return err
 	}
-	var buf bytes.Buffer
 	var currentLineLength int
-	for i := range convertedRow {
-		// max length of 70 characters per line
-		if currentLineLength > 0 && currentLineLength+1+len(convertedRow[i]) > 70 {
-			// Add a new line if the accumulated line length exceeds maxLineLength
-			buf.WriteString("\n")
-			currentLineLength = 0 // Reset current line length after line break
+
+	for y := range c.Height {
+		for x := range c.Width {
+			rgb := c.Get(x, y).ToRGB(MAX_COLORS - 1)
+			for color := range rgb {
+				str := fmt.Sprintf("%d", rgb[color])
+				if currentLineLength > 0 && currentLineLength+1+len(str) > 70 {
+					// Add a new line if the accumulated line length exceeds 70 characters
+					writer.Write([]byte("\n"))
+					currentLineLength = 0
+				}
+				if currentLineLength > 0 {
+					writer.Write([]byte(" "))
+					currentLineLength++
+				}
+				writer.Write([]byte(str))
+				currentLineLength += len(str)
+			}
 		}
-		if currentLineLength > 0 {
-			buf.WriteString(" ")
-			currentLineLength++
-		}
-		buf.WriteString(convertedRow[i])
-		currentLineLength += len(convertedRow[i])
-		// add space after each value except at end of row
+		writer.Write([]byte("\n"))
+		currentLineLength = 0
 	}
-	buf.WriteString("\n")
-	return buf.Bytes()
+	return nil
 }

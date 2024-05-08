@@ -36,9 +36,8 @@ func TestPPMColorMax(t *testing.T) {
 	canvas.Set(2, 1, raytracer.NewColor(0, 0.5, 0))
 	canvas.Set(4, 2, raytracer.NewColor(-0.5, 0, 1))
 	var buf bytes.Buffer
-	n, err := canvas.ToPPM(&buf)
+	err := canvas.ToPPM(&buf)
 	assert.Nil(t, err)
-	assert.Equal(t, 107, n)
 	assert.Equal(t, output, buf.String())
 
 }
@@ -59,7 +58,7 @@ func TestPPMLineLength(t *testing.T) {
 		}
 	}
 	var buf bytes.Buffer
-	_, err := canvas.ToPPM(&buf)
+	err := canvas.ToPPM(&buf)
 	assert.Nil(t, err)
 	ppm := buf.String()
 	assert.Equal(t, output, ppm)

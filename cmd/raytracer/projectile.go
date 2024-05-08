@@ -69,7 +69,6 @@ var projectileGraphCmd = &cobra.Command{
 		for i := range positions {
 			x := int(positions[i].X()) + 5
 			y := canvas.Height - int(positions[i].Y()) - 5
-			fmt.Printf("setting %d,%d(%d) to red\n", x, y, int(positions[i].Y()))
 			DrawSquare(canvas, x, y, red)
 		}
 		WritePPM(canvas, "canvas.ppm")
@@ -83,12 +82,12 @@ func WritePPM(canvas *raytracer.Canvas, fileName string) error {
 	}
 	defer file.Close()
 
-	n, err := canvas.ToPPM(file)
+	err = canvas.ToPPM(file)
 	if err != nil {
 		return fmt.Errorf("failed to write to file: %v", err)
 	}
 
-	fmt.Printf("PPM content successfully written to %s (%d)\n", fileName, n)
+	fmt.Printf("PPM content successfully written to %s\n", fileName)
 	return nil
 }
 
