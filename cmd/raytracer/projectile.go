@@ -50,9 +50,9 @@ var projectileGraphCmd = &cobra.Command{
 			gravity: raytracer.NewVectorFromString(gravity),
 			wind:    raytracer.NewVectorFromString(wind),
 		}
-		positions := make([]*raytracer.Point, 0)
+		positions := make([]*raytracer.Tuple, 0)
 		maxX, maxY := 0.0, 0.0
-		positions = append(positions, p.position.(*raytracer.Point))
+		positions = append(positions, p.position)
 		for p.position.Y() > 0 {
 			if p.position.X() > maxX {
 				maxX = p.position.X()
@@ -60,7 +60,7 @@ var projectileGraphCmd = &cobra.Command{
 			if p.position.Y() > maxY {
 				maxY = p.position.Y()
 			}
-			positions = append(positions, p.position.(*raytracer.Point))
+			positions = append(positions, p.position)
 			p = tick(p, env)
 		}
 		canvas := raytracer.NewCanvas(int(maxX)+10, int(maxY)+10)
@@ -70,22 +70,14 @@ var projectileGraphCmd = &cobra.Command{
 			x := int(positions[i].X()) + 5
 			y := canvas.Height - int(positions[i].Y()) - 5
 			fmt.Printf("setting %d,%d(%d) to red\n", x, y, int(positions[i].Y()))
-			canvas.Set(x, y, red)
-			canvas.Set(x+1, y, red)
-			canvas.Set(x-1, y, red)
-			canvas.Set(x, y+1, red)
-			canvas.Set(x, y-1, red)
-			canvas.Set(x-1, y-1, red)
-			canvas.Set(x+1, y-1, red)
-			canvas.Set(x-1, y+1, red)
-			canvas.Set(x+1, y+1, red)
+			DrawSquare(canvas, x, y, red)
 		}
-		WritePPM(*canvas)
+		WritePPM(canvas, "canvas.ppm")
 	},
 }
 
-func WritePPM(canvas raytracer.Canvas) error {
-	file, err := os.Create("canvas.ppm")
+func WritePPM(canvas *raytracer.Canvas, fileName string) error {
+	file, err := os.Create(fileName)
 	if err != nil {
 		return fmt.Errorf("failed to create file: %v", err)
 	}
@@ -96,18 +88,18 @@ func WritePPM(canvas raytracer.Canvas) error {
 		return fmt.Errorf("failed to write to file: %v", err)
 	}
 
-	fmt.Printf("PPM content successfully written to canvas.ppm (%d)\n", n)
+	fmt.Printf("PPM content successfully written to %s (%d)\n", fileName, n)
 	return nil
 }
 
 type projectile struct {
-	position raytracer.Tuple
-	velocity raytracer.Tuple
+	position *raytracer.Tuple
+	velocity *raytracer.Tuple
 }
 
 type environment struct {
-	gravity raytracer.Tuple
-	wind    raytracer.Tuple
+	gravity *raytracer.Tuple
+	wind    *raytracer.Tuple
 }
 
 func init() {
@@ -130,4 +122,16 @@ func tick(p projectile, env environment) projectile {
 		position: position,
 		velocity: velocity,
 	}
+}
+
+func DrawSquare(canvas *raytracer.Canvas, x, y int, color *raytracer.Color) {
+	canvas.Set(x, y, color)
+	canvas.Set(x+1, y, color)
+	canvas.Set(x-1, y, color)
+	canvas.Set(x, y+1, color)
+	canvas.Set(x, y-1, color)
+	canvas.Set(x-1, y-1, color)
+	canvas.Set(x+1, y-1, color)
+	canvas.Set(x-1, y+1, color)
+	canvas.Set(x+1, y+1, color)
 }

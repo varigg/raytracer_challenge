@@ -72,14 +72,13 @@ func RowToString(row int, pixels [][]Color) []byte {
 			buf.WriteString("\n")
 			currentLineLength = 0 // Reset current line length after line break
 		}
-
+		if currentLineLength > 0 {
+			buf.WriteString(" ")
+			currentLineLength++
+		}
 		buf.WriteString(convertedRow[i])
 		currentLineLength += len(convertedRow[i])
 		// add space after each value except at end of row
-		if i < len(convertedRow)-1 {
-			buf.WriteString(" ")
-			currentLineLength += 1
-		}
 	}
 	buf.WriteString("\n")
 	return buf.Bytes()
