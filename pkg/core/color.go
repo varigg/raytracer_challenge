@@ -1,6 +1,9 @@
-package raytracer
+package core
 
-import "math"
+import (
+	"image/color"
+	"math"
+)
 
 type Color struct {
 	red   float64
@@ -65,16 +68,16 @@ func (c1 *Color) Equals(c2 *Color) bool {
 		equals(c1.Green(), c2.Green()) && equals(c1.Blue(), c2.Blue())
 }
 
-func (c1 *Color) ToRGB(maxValues int) []int {
-
-	rgb := make([]int, 3)
+func (c1 *Color) ToRGBA(maxValues int) color.RGBA {
+	rgb := make([]uint8, 4)
 	rgb[0] = ConvertFloatToColorValue(c1.Red(), maxValues)
 	rgb[1] = ConvertFloatToColorValue(c1.Green(), maxValues)
 	rgb[2] = ConvertFloatToColorValue(c1.Blue(), maxValues)
-	return rgb
+	rgb[3] = 0xFF
+	return color.RGBA{rgb[0], rgb[1], rgb[2], rgb[3]}
 }
 
-func ConvertFloatToColorValue(f float64, maxValue int) int {
+func ConvertFloatToColorValue(f float64, maxValue int) uint8 {
 	// Ensure the float value is within the range [0, 1]
 	if f < 0 {
 		f = 0
@@ -82,8 +85,8 @@ func ConvertFloatToColorValue(f float64, maxValue int) int {
 		f = 1.0
 	}
 
-	// Multiply the float by 255 and convert to integer
-	result := int(math.Round(f * float64(maxValue)))
+	// Multiply the float by maxValue and convert to integer
+	result := uint8(math.Round(f * float64(maxValue)))
 
 	return result
 }

@@ -4,7 +4,7 @@ import (
 	"math"
 
 	"github.com/spf13/cobra"
-	"github.com/varigg/raytracer-challenge/pkg/raytracer"
+	"github.com/varigg/raytracer-challenge/pkg/core"
 )
 
 var clockCmd = &cobra.Command{
@@ -12,12 +12,12 @@ var clockCmd = &cobra.Command{
 	Aliases: []string{"chapter4"},
 	Short:   "draws a clock face using matrix operations",
 	Run: func(cmd *cobra.Command, args []string) {
-		r := raytracer.RotationMatrixY(2.0 * math.Pi / 12.0)
+		r := core.RotationMatrixY(2.0 * math.Pi / 12.0)
 		var x, y int
-		current := raytracer.NewPoint(0.0, 0.0, 1.0)
+		current := core.NewPoint(0.0, 0.0, 1.0)
 
-		c := raytracer.NewCanvas(500, 500)
-		color := raytracer.NewColor(1.0, 0.0, 0.0)
+		c := core.NewCanvas(500, 500)
+		color := core.NewColor(1.0, 0.0, 0.0)
 		radius := 3.0 / 8.0 * 500.0
 
 		for _ = range 12 {
@@ -27,7 +27,8 @@ var clockCmd = &cobra.Command{
 
 			current = r.MultiplyWithTuple(current)
 		}
-		WritePPM(c, "clock.ppm")
+		c.SavePPM("clock.ppm")
+		c.SavePNG("clock.png")
 	},
 }
 

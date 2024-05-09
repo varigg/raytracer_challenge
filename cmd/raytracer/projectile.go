@@ -2,10 +2,9 @@ package raytracer
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/varigg/raytracer-challenge/pkg/raytracer"
+	"github.com/varigg/raytracer-challenge/pkg/core"
 )
 
 var wind string
@@ -19,12 +18,12 @@ var projectileCmd = &cobra.Command{
 	Short:   "computes how far a projectile flies until it hits y=0",
 	Run: func(cmd *cobra.Command, args []string) {
 		p := projectile{
-			position: raytracer.NewPointFromString(origin),
-			velocity: raytracer.NewVectorFromString(velocity),
+			position: core.NewPointFromString(origin),
+			velocity: core.NewVectorFromString(velocity),
 		}
 		env := environment{
-			gravity: raytracer.NewVectorFromString(gravity),
-			wind:    raytracer.NewVectorFromString(wind),
+			gravity: core.NewVectorFromString(gravity),
+			wind:    core.NewVectorFromString(wind),
 		}
 		distance := 0
 		for p.position.Y() > 0 {
@@ -43,14 +42,14 @@ var projectileGraphCmd = &cobra.Command{
 	Short:   "plots trajectory of a projectile",
 	Run: func(cmd *cobra.Command, args []string) {
 		p := projectile{
-			position: raytracer.NewPointFromString(origin),
-			velocity: raytracer.NewVectorFromString(velocity),
+			position: core.NewPointFromString(origin),
+			velocity: core.NewVectorFromString(velocity),
 		}
 		env := environment{
-			gravity: raytracer.NewVectorFromString(gravity),
-			wind:    raytracer.NewVectorFromString(wind),
+			gravity: core.NewVectorFromString(gravity),
+			wind:    core.NewVectorFromString(wind),
 		}
-		positions := make([]*raytracer.Tuple, 0)
+		positions := make([]*core.Tuple, 0)
 		maxX, maxY := 0.0, 0.0
 		positions = append(positions, p.position)
 		for p.position.Y() > 0 {
@@ -63,42 +62,26 @@ var projectileGraphCmd = &cobra.Command{
 			positions = append(positions, p.position)
 			p = tick(p, env)
 		}
-		canvas := raytracer.NewCanvas(int(maxX)+10, int(maxY)+10)
+		canvas := core.NewCanvas(int(maxX)+10, int(maxY)+10)
 		fmt.Printf("%dx%d", canvas.Width, canvas.Height)
-		red := raytracer.NewColor(1.0, 0, 0)
+		red := core.NewColor(1.0, 0, 0)
 		for i := range positions {
 			x := int(positions[i].X()) + 5
 			y := canvas.Height - int(positions[i].Y()) - 5
 			DrawSquare(canvas, x, y, red)
 		}
-		WritePPM(canvas, "canvas.ppm")
+		canvas.SavePPM("canvas.ppm")
 	},
 }
 
-func WritePPM(canvas *raytracer.Canvas, fileName string) error {
-	file, err := os.Create(fileName)
-	if err != nil {
-		return fmt.Errorf("failed to create file: %v", err)
-	}
-	defer file.Close()
-
-	err = canvas.ToPPM(file)
-	if err != nil {
-		return fmt.Errorf("failed to write to file: %v", err)
-	}
-
-	fmt.Printf("PPM content successfully written to %s\n", fileName)
-	return nil
-}
-
 type projectile struct {
-	position *raytracer.Tuple
-	velocity *raytracer.Tuple
+	position *core.Tuple
+	velocity *core.Tuple
 }
 
 type environment struct {
-	gravity *raytracer.Tuple
-	wind    *raytracer.Tuple
+	gravity *core.Tuple
+	wind    *core.Tuple
 }
 
 func init() {
@@ -123,7 +106,7 @@ func tick(p projectile, env environment) projectile {
 	}
 }
 
-func DrawSquare(canvas *raytracer.Canvas, x, y int, color *raytracer.Color) {
+func DrawSquare(canvas *core.Canvas, x, y int, color *core.Color) {
 	canvas.Set(x, y, color)
 	canvas.Set(x+1, y, color)
 	canvas.Set(x-1, y, color)

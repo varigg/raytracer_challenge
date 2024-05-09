@@ -1,8 +1,11 @@
-package raytracer
+package core
 
 import (
 	"fmt"
+	"image"
+	"image/png"
 	"io"
+	"os"
 )
 
 const MAX_COLORS = 256
@@ -54,9 +57,9 @@ func (c *Canvas) ToPPM(writer io.Writer) error {
 
 	for y := range c.Height {
 		for x := range c.Width {
-			rgb := c.Get(x, y).ToRGB(MAX_COLORS - 1)
-			for color := range rgb {
-				str := fmt.Sprintf("%d", rgb[color])
+			rgb := c.Get(x, y).ToRGBA(MAX_COLORS - 1)
+			for _, color := range []uint8{rgb.R, rgb.G, rgb.B} {
+				str := fmt.Sprintf("%d", color)
 				if currentLineLength > 0 && currentLineLength+1+len(str) > 70 {
 					// Add a new line if the accumulated line length exceeds 70 characters
 					writer.Write([]byte("\n"))
@@ -74,4 +77,42 @@ func (c *Canvas) ToPPM(writer io.Writer) error {
 		currentLineLength = 0
 	}
 	return nil
+}
+
+func (c *Canvas) SavePPM(fileName string) error {
+	file, err := os.Create(fileName)
+	if err != nil {
+		return fmt.Errorf("failed to create file: %v", err)
+	}
+	defer file.Close()
+
+	err = c.ToPPM(file)
+	if err != nil {
+		return fmt.Errorf("failed to write to file: %v", err)
+	}
+
+	fmt.Printf("PPM content successfully written to %s\n", fileName)
+	return nil
+}
+
+func (c *Canvas) SavePNG(filename string) {
+	img := image.NewRGBA(image.Rect(0, 0, c.Width, c.Height))
+
+	for y := 0; y < c.Height; y += 1 {
+		for x := 0; x < c.Width; x += 1 {
+			pixel := c.Get(x, y)
+			c := pixel.ToRGBA(255)
+			img.Set(x, y, c)
+		}
+	}
+
+	f, err := os.Create(filename)
+	defer f.Close()
+	if err != nil {
+		fmt.Println(err)
+		f.Close()
+		return
+	}
+
+	png.Encode(f, img)
 }
