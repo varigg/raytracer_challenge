@@ -26,8 +26,8 @@ var projectileCmd = &cobra.Command{
 			wind:    core.NewVectorFromString(wind),
 		}
 		distance := 0
-		for p.position.Y() > 0 {
-			fmt.Println(p.position.X())
+		for p.position.Y > 0 {
+			fmt.Println(p.position.X)
 			p = tick(p, env)
 			distance += 1
 		}
@@ -52,12 +52,12 @@ var projectileGraphCmd = &cobra.Command{
 		positions := make([]*core.Tuple, 0)
 		maxX, maxY := 0.0, 0.0
 		positions = append(positions, p.position)
-		for p.position.Y() > 0 {
-			if p.position.X() > maxX {
-				maxX = p.position.X()
+		for p.position.Y > 0 {
+			if p.position.X > maxX {
+				maxX = p.position.X
 			}
-			if p.position.Y() > maxY {
-				maxY = p.position.Y()
+			if p.position.Y > maxY {
+				maxY = p.position.Y
 			}
 			positions = append(positions, p.position)
 			p = tick(p, env)
@@ -66,8 +66,8 @@ var projectileGraphCmd = &cobra.Command{
 		fmt.Printf("%dx%d", canvas.Width, canvas.Height)
 		red := core.NewColor(1.0, 0, 0)
 		for i := range positions {
-			x := int(positions[i].X()) + 5
-			y := canvas.Height - int(positions[i].Y()) - 5
+			x := int(positions[i].X) + 5
+			y := canvas.Height - int(positions[i].Y) - 5
 			DrawSquare(canvas, x, y, red)
 		}
 		canvas.SavePPM("canvas.ppm")

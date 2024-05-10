@@ -105,3 +105,12 @@ func TestCross(t *testing.T) {
 	assert.Equal(t, core.NewVector(-1, 2, -1), v1.Cross(v2))
 	assert.Equal(t, core.NewVector(1, -2, 1), v2.Cross(v1))
 }
+
+func TestReflect(t *testing.T) {
+	v := core.NewVector(1, -1, 0)
+	n := core.NewVector(0, 1, 0)
+	assert.True(t, core.NewVector(1, 1, 0).Equals(v.Reflect(n)))
+	v = core.NewVector(0, -1, 0)
+	n = core.NewVector(math.Sqrt(2)/2, math.Sqrt(2)/2, 0)
+	assert.True(t, core.NewVector(1, 0, 0).Equals(v.Reflect(n)))
+}

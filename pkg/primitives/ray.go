@@ -1,14 +1,17 @@
-package core
+package primitives
+
+import "github.com/varigg/raytracer-challenge/pkg/core"
 
 type Ray struct {
-	Origin        *Tuple
-	Direction     *Tuple
+	Origin        *core.Tuple
+	Direction     *core.Tuple
 	Intersections []Intersection
 	hit           *Intersection
 }
 
 type Intersecter interface {
 	Intersect(*Ray) []Intersection
+	NormalAt(*core.Tuple) *core.Tuple
 }
 
 type Intersection struct {
@@ -16,7 +19,7 @@ type Intersection struct {
 	Object Intersecter
 }
 
-func NewRay(origin, direction *Tuple) *Ray {
+func NewRay(origin, direction *core.Tuple) *Ray {
 	r := Ray{
 		Origin:    origin,
 		Direction: direction,
@@ -24,7 +27,7 @@ func NewRay(origin, direction *Tuple) *Ray {
 	return &r
 }
 
-func (r *Ray) Position(t float64) *Tuple {
+func (r *Ray) Position(t float64) *core.Tuple {
 	return r.Origin.Add(r.Direction.Multiply(t))
 }
 
@@ -49,7 +52,7 @@ func (r *Ray) Hit() *Intersection {
 	return r.hit
 }
 
-func (r *Ray) Transform(m *Matrix) *Ray {
+func (r *Ray) Transform(m *core.Matrix) *Ray {
 	newRay := Ray{
 		Origin:    m.MultiplyWithTuple(r.Origin),
 		Direction: m.MultiplyWithTuple(r.Direction),

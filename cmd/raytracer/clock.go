@@ -21,8 +21,8 @@ var clockCmd = &cobra.Command{
 		radius := 3.0 / 8.0 * 500.0
 
 		for _ = range 12 {
-			x = int(current.X()*radius + 250)
-			y = int(current.Z()*radius + 250)
+			x = int(current.X*radius + 250)
+			y = int(current.Z*radius + 250)
 			DrawSquare(c, x, y, color)
 
 			current = r.MultiplyWithTuple(current)

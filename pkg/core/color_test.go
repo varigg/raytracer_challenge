@@ -38,17 +38,17 @@ func TestHadamardProduct(t *testing.T) {
 }
 
 func TestFloatToColorValue(t *testing.T) {
-	assert.Equal(t, 255, core.ConvertFloatToColorValue(1.0, 255))
-	assert.Equal(t, 0, core.ConvertFloatToColorValue(0.0, 255))
-	assert.Equal(t, 0, core.ConvertFloatToColorValue(-1.0, 255))
-	assert.Equal(t, 255, core.ConvertFloatToColorValue(1.5, 255))
-	assert.Equal(t, 128, core.ConvertFloatToColorValue(.5, 255))
+	assert.Equal(t, uint8(255), core.ConvertFloatToColorValue(1.0, 255))
+	assert.Equal(t, uint8(0), core.ConvertFloatToColorValue(0.0, 255))
+	assert.Equal(t, uint8(0), core.ConvertFloatToColorValue(-1.0, 255))
+	assert.Equal(t, uint8(255), core.ConvertFloatToColorValue(1.5, 255))
+	assert.Equal(t, uint8(128), core.ConvertFloatToColorValue(.5, 255))
 }
 
 func TestToRGB(t *testing.T) {
 	c1 := core.NewColor(1, 0.2, 0.4)
 	rgb := c1.ToRGBA(255)
-	assert.Equal(t, 255, rgb.R)
-	assert.Equal(t, 51, rgb.G)
-	assert.Equal(t, 102, rgb.B)
+	assert.Equal(t, uint8(255), rgb.R)
+	assert.Equal(t, uint8(51), rgb.G)
+	assert.Equal(t, uint8(102), rgb.B)
 }
