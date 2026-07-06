@@ -3,7 +3,7 @@ package raytracer
 import (
 	"github.com/spf13/cobra"
 	"github.com/varigg/raytracer-challenge/pkg/core"
-	"github.com/varigg/raytracer-challenge/pkg/primitives"
+	"github.com/varigg/raytracer-challenge/pkg/objects"
 	"github.com/varigg/raytracer-challenge/pkg/shader"
 )
 
@@ -31,7 +31,7 @@ var sphereShadowCmd = &cobra.Command{
 		pixelSize := wallSize / float64(canvas.Height)
 		half := wallSize / 2
 
-		shape := primitives.NewSphere()
+		shape := objects.NewSphere()
 		shape.SetTransform(core.ScalingMatrix(1, 0.5, 1))
 
 		for y := 0; y < pixels; y += 1 {
@@ -41,9 +41,9 @@ var sphereShadowCmd = &cobra.Command{
 				// the point on the wall we are shooting the ray at
 				position := core.NewPoint(worldX, worldY, wallZ)
 				// ray starting at origin with a vector towards the target point
-				r := primitives.NewRay(rayOrigin, position.Subtract(rayOrigin).Normalize())
-				r.AddIntersections(shape.Intersect(r)...)
-				if r.Hit() != nil {
+				r := objects.NewRay(rayOrigin, position.Subtract(rayOrigin).Normalize())
+				xs := shape.Intersect(r)
+				if objects.Hit(xs) != nil {
 					canvas.Set(x, y, core.NewColor(0.9, 0, 0))
 				}
 			}
@@ -70,7 +70,7 @@ var sphereCmd = &cobra.Command{
 		pixelSize := wallSize / float64(canvas.Height)
 		half := wallSize / 2
 
-		shape := primitives.NewSphere()
+		shape := objects.NewSphere()
 		mat := shader.NewMaterial()
 		mat.Color = *core.NewColor(1, 0.2, 1)
 		shape.Material = mat
@@ -83,11 +83,12 @@ var sphereCmd = &cobra.Command{
 				// the point on the wall we are shooting the ray at
 				position := core.NewPoint(worldX, worldY, wallZ)
 				// ray starting at origin with a vector towards the target point
-				r := primitives.NewRay(rayOrigin, position.Subtract(rayOrigin).Normalize())
-				r.AddIntersections(shape.Intersect(r)...)
-				if r.Hit() != nil {
-					p := r.Position(r.Hit().T)
-					normal := r.Hit().Object.NormalAt(p)
+				r := objects.NewRay(rayOrigin, position.Subtract(rayOrigin).Normalize())
+				xs := shape.Intersect(r)
+				hit := objects.Hit(xs)
+				if hit != nil {
+					p := r.Position(hit.T)
+					normal := hit.Object.NormalAt(p)
 					eye := r.Direction.Negate()
 					color := light.Lighting(mat, p, eye, normal)
 

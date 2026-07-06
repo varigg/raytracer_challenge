@@ -104,6 +104,22 @@ func TestMatrixMultiplication(t *testing.T) {
 	assert.Equal(t, m1, m1.Times(m2))
 }
 
+func TestMatrixMultiplication2x2(t *testing.T) {
+	m1 := core.NewMatrix([][]float64{
+		{1, 2},
+		{3, 4},
+	})
+	m2 := core.NewMatrix([][]float64{
+		{5, 6},
+		{7, 8},
+	})
+	expected := core.NewMatrix([][]float64{
+		{19, 22},
+		{43, 50},
+	})
+	assert.Equal(t, expected, m1.Times(m2))
+}
+
 func TestMatrixMultiplicationByTyple(t *testing.T) {
 	data := [][]float64{
 		{1, 2, 3, 4},
@@ -139,6 +155,24 @@ func TestTransposeMatrix(t *testing.T) {
 	//assert.True(t, expected.Equals(result))
 	assert.Equal(t, expected, m.Transpose())
 	assert.Equal(t, core.Identity4(), core.Identity4().Transpose())
+}
+
+func TestTransposeDoesNotMutateReceiver(t *testing.T) {
+	m := core.NewMatrix([][]float64{
+		{0.0, 9.0, 3.0, 0.0},
+		{9.0, 8.0, 0.0, 8.0},
+		{1.0, 8.0, 5.0, 3.0},
+		{0.0, 0.0, 5.0, 8.0},
+	})
+	original := core.NewMatrix([][]float64{
+		{0.0, 9.0, 3.0, 0.0},
+		{9.0, 8.0, 0.0, 8.0},
+		{1.0, 8.0, 5.0, 3.0},
+		{0.0, 0.0, 5.0, 8.0},
+	})
+
+	m.Transpose()
+	assert.Equal(t, original, m)
 }
 
 func TestInvert2x2Matrix(t *testing.T) {
@@ -348,6 +382,14 @@ func TestRotateZ(t *testing.T) {
 	half_quarter := core.RotationMatrixZ(math.Pi / 4)
 	full_quarter := core.RotationMatrixZ(math.Pi / 2)
 	assert.True(t, core.NewPoint(-math.Sqrt(2)/2, math.Sqrt(2)/2, 0).Equals(half_quarter.MultiplyWithTuple(p)))
+	// Rotated 90 degrees around Z, (0,1,0) -> (-1,0,0) is correct for counter-clockwise rotation
+	// Wait, standard rotation:
+	// x' = x cos - y sin
+	// y' = x sin + y cos
+	// p = (0, 1, 0)
+	// x' = 0 - 1 * 1 = -1
+	// y' = 0 + 0 = 0
+	// So (-1, 0, 0) is correct for p=(0,1,0)
 	assert.True(t, core.NewPoint(-1, 0, 0).Equals(full_quarter.MultiplyWithTuple(p)))
 }
 

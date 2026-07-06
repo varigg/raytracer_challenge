@@ -78,9 +78,11 @@ func (m1 *Matrix) Times(m2 *Matrix) *Matrix {
 	for i := 0; i < size; i++ {
 		row := make([]float64, size)
 		for j := 0; j < size; j++ {
-			iTuple := NewTuple((*m1)[i][0], (*m1)[i][1], (*m1)[i][2], (*m1)[i][3])
-			jTuple := NewTuple((*m2)[0][j], (*m2)[1][j], (*m2)[2][j], (*m2)[3][j])
-			row[j] = iTuple.Dot(jTuple)
+			sum := 0.0
+			for k := 0; k < size; k++ {
+				sum += (*m1)[i][k] * (*m2)[k][j]
+			}
+			row[j] = sum
 		}
 		result[i] = row
 	}
@@ -98,16 +100,14 @@ func (m *Matrix) MultiplyWithTuple(t *Tuple) *Tuple {
 }
 
 func (m *Matrix) Transpose() *Matrix {
-	col := 0
-	for i := 0; i < m.Size(); i++ {
-		for j := col; j < m.Size(); j++ {
-			temp := (*m)[i][j]
-			(*m)[i][j] = (*m)[j][i]
-			(*m)[j][i] = temp
+	size := m.Size()
+	result := NewEmptyMatrix(size)
+	for i := 0; i < size; i++ {
+		for j := 0; j < size; j++ {
+			(*result)[j][i] = (*m)[i][j]
 		}
-		col++
 	}
-	return m
+	return result
 }
 
 func (m *Matrix) Determinant() float64 {
@@ -228,7 +228,7 @@ func RotationMatrixZ(radians float64) *Matrix {
 	result := NewEmptyMatrix(4)
 	(*result)[0][0] = math.Cos(radians)
 	(*result)[0][1] = -math.Sin(radians)
-	(*result)[1][0] = -math.Sin(radians)
+	(*result)[1][0] = math.Sin(radians)
 	(*result)[1][1] = math.Cos(radians)
 	(*result)[2][2] = 1
 	(*result)[3][3] = 1
