@@ -130,3 +130,19 @@ ok  	github.com/varigg/raytracer-challenge/pkg/core	4.046s
 ```
 
 `BenchmarkMatrixInvert` dropped from 57884 ns/op to 14640 ns/op, a 4× improvement from hoisting the determinant computation out of the double loop and eliminating 15 redundant O(n!) cofactor expansions.
+
+## 2026-07-09 — Perf: cached inverse-transpose
+
+```
+goos: linux
+goarch: amd64
+pkg: github.com/varigg/raytracer-challenge/pkg/objects
+cpu: AMD Ryzen 5 5600X 6-Core Processor             
+BenchmarkSphereNormalAt-12    	80721944	        15.07 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSphereNormalAt-12    	81468397	        14.84 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSphereNormalAt-12    	82179948	        15.04 ns/op	       0 B/op	       0 allocs/op
+PASS
+ok  	github.com/varigg/raytracer-challenge/pkg/objects	3.718s
+```
+
+`BenchmarkSphereNormalAt` dropped from 136.8 ns/op to ~15 ns/op, a ~9× improvement from caching the inverse-transpose matrix to avoid redundant computation on every normal calculation.
