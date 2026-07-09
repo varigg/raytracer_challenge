@@ -39,6 +39,18 @@ func (c *Canvas) Set(x, y int, color Color) {
 	c.pixels[x][y] = color
 }
 
+// DrawSquare paints a 3x3 square centered on (x, y), clipped to the canvas bounds.
+func (c *Canvas) DrawSquare(x, y int, color Color) {
+	for dy := -1; dy <= 1; dy++ {
+		for dx := -1; dx <= 1; dx++ {
+			px, py := x+dx, y+dy
+			if px >= 0 && px < c.Width && py >= 0 && py < c.Height {
+				c.Set(px, py, color)
+			}
+		}
+	}
+}
+
 func (c *Canvas) ToPPM(w io.Writer) error {
 	bw := bufio.NewWriter(w)
 	fmt.Fprintf(bw, "P3\n%d %d\n%d\n", c.Width, c.Height, maxColorValue)

@@ -88,9 +88,9 @@ var projectileGraphCmd = &cobra.Command{
 		for i := range positions {
 			x := int(positions[i].X) + 5
 			y := canvas.Height - int(positions[i].Y) - 5
-			DrawSquare(canvas, x, y, red)
+			canvas.DrawSquare(x, y, red)
 		}
-		return canvas.SavePPM("canvas.ppm")
+		return saveCanvas(canvas, "canvas.ppm")
 	},
 }
 
@@ -124,16 +124,4 @@ func tick(p projectile, env environment) projectile {
 		position: position,
 		velocity: velocity,
 	}
-}
-
-func DrawSquare(canvas *core.Canvas, x, y int, color core.Color) {
-	canvas.Set(x, y, color)
-	canvas.Set(x+1, y, color)
-	canvas.Set(x-1, y, color)
-	canvas.Set(x, y+1, color)
-	canvas.Set(x, y-1, color)
-	canvas.Set(x-1, y-1, color)
-	canvas.Set(x+1, y-1, color)
-	canvas.Set(x-1, y+1, color)
-	canvas.Set(x+1, y+1, color)
 }
