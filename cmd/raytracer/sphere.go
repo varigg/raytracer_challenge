@@ -14,7 +14,7 @@ type pixel struct {
 }
 
 var sphereShadowCmd = &cobra.Command{
-	Use:     "shadow ",
+	Use:     "shadow",
 	Aliases: []string{"chapter5"},
 	Short:   "draws the shadow of a sphere on a wall using raytracing",
 	Run: func(cmd *cobra.Command, args []string) {
@@ -53,8 +53,8 @@ var sphereShadowCmd = &cobra.Command{
 }
 
 var sphereCmd = &cobra.Command{
-	Use:     "sphere ",
-	Aliases: []string{"chapter5"},
+	Use:     "sphere",
+	Aliases: []string{"chapter6"},
 	Short:   "draws a sphere using raytracing",
 	Run: func(cmd *cobra.Command, args []string) {
 

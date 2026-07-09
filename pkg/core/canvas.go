@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-const MAX_COLORS = 256
+const maxColorValue = 255
 
 type Canvas struct {
 	Height int
@@ -37,18 +37,8 @@ func (c *Canvas) Set(x, y int, color *Color) {
 	c.pixels[x][y] = *color
 }
 
-func (c *Canvas) Pixels() []*Color {
-	pixels := make([]*Color, 0)
-	for y := range c.Height - 1 {
-		for x := range c.Width - 1 {
-			pixels = append(pixels, c.Get(x, y))
-		}
-	}
-	return pixels
-}
-
 func (c *Canvas) ToPPM(writer io.Writer) error {
-	ppm := fmt.Sprintf("P3\n%d %d\n%d\n", c.Width, c.Height, MAX_COLORS-1)
+	ppm := fmt.Sprintf("P3\n%d %d\n%d\n", c.Width, c.Height, maxColorValue)
 	_, err := writer.Write([]byte(ppm))
 	if err != nil {
 		return err
@@ -57,7 +47,7 @@ func (c *Canvas) ToPPM(writer io.Writer) error {
 
 	for y := range c.Height {
 		for x := range c.Width {
-			rgb := c.Get(x, y).ToRGBA(MAX_COLORS - 1)
+			rgb := c.Get(x, y).ToRGBA(maxColorValue)
 			for _, color := range []uint8{rgb.R, rgb.G, rgb.B} {
 				str := fmt.Sprintf("%d", color)
 				if currentLineLength > 0 && currentLineLength+1+len(str) > 70 {
@@ -101,7 +91,7 @@ func (c *Canvas) SavePNG(filename string) {
 	for y := 0; y < c.Height; y += 1 {
 		for x := 0; x < c.Width; x += 1 {
 			pixel := c.Get(x, y)
-			c := pixel.ToRGBA(255)
+			c := pixel.ToRGBA(maxColorValue)
 			img.Set(x, y, c)
 		}
 	}

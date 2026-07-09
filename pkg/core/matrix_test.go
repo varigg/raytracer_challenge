@@ -100,7 +100,7 @@ func TestMatrixMultiplication(t *testing.T) {
 	expected := core.NewMatrix(data)
 	assert.Equal(t, expected, m1.Times(m2))
 
-	m2 = core.Identity4()
+	m2 = core.Identity(4)
 	assert.Equal(t, m1, m1.Times(m2))
 }
 
@@ -133,7 +133,7 @@ func TestMatrixMultiplicationByTyple(t *testing.T) {
 
 	expected := core.NewTuple(18, 24, 33, 1)
 	assert.Equal(t, expected, m.MultiplyWithTuple(tuple))
-	m = core.Identity4()
+	m = core.Identity(4)
 	assert.Equal(t, tuple, m.MultiplyWithTuple(tuple))
 }
 
@@ -154,7 +154,7 @@ func TestTransposeMatrix(t *testing.T) {
 
 	//assert.True(t, expected.Equals(result))
 	assert.Equal(t, expected, m.Transpose())
-	assert.Equal(t, core.Identity4(), core.Identity4().Transpose())
+	assert.Equal(t, core.Identity(4), core.Identity(4).Transpose())
 }
 
 func TestTransposeDoesNotMutateReceiver(t *testing.T) {

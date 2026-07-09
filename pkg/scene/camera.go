@@ -37,7 +37,7 @@ func NewCamera(hsize, vsize int, fov float64) *Camera {
 		HSize:     hsize,
 		VSize:     vsize,
 		FOV:       fov,
-		Transform: core.Identity4(),
+		Transform: core.Identity(4),
 	}
 
 	halfView := math.Tan(fov / 2)

@@ -18,9 +18,9 @@ type Sphere struct {
 var center *core.Tuple = core.NewPoint(0, 0, 0)
 
 func NewSphere() *Sphere {
-	idInv := core.Identity4().Invert()
+	idInv := core.Identity(4).Invert()
 	s := Sphere{
-		transform: core.Identity4(),
+		transform: core.Identity(4),
 		invert:    idInv,
 		Material:  shader.NewMaterial(),
 	}

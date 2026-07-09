@@ -20,7 +20,7 @@ var clockCmd = &cobra.Command{
 		color := core.NewColor(1.0, 0.0, 0.0)
 		radius := 3.0 / 8.0 * 500.0
 
-		for _ = range 12 {
+		for range 12 {
 			x = int(current.X*radius + 250)
 			y = int(current.Z*radius + 250)
 			DrawSquare(c, x, y, color)

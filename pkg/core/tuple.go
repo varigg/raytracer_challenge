@@ -6,27 +6,6 @@ import (
 	"strings"
 )
 
-// type Tuple interface {
-// 	X float64
-// 	Y float64
-// 	Z float64
-// 	W float64
-// 	IsVector() bool
-// 	IsPoint() bool
-// 	Add(Tuple) Tuple
-// 	Subtract(Tuple) Tuple
-// 	Negate() Tuple
-// 	Multiply(float64) Tuple
-// 	Divide(float64) Tuple
-// }
-
-// 	Divide(float64) Tuple
-// 	Magnitude() float64
-// 	Normalize() Tuple
-// 	Dot(Tuple) float64
-// 	Cross(Tuple) Tuple
-// }
-
 type Tuple struct {
 	X float64
 	Y float64
