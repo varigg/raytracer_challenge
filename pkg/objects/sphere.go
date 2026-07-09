@@ -8,10 +8,10 @@ import (
 )
 
 type Sphere struct {
-	transform *core.Matrix
+	transform core.Matrix
 	// Transform.Invert() is used for calculating every hit.
 	// Since it is static we dont need to recompute it every time.
-	invert   *core.Matrix
+	invert   core.Matrix
 	Material *shader.Material
 }
 
@@ -47,17 +47,17 @@ func (s *Sphere) Intersect(ray *Ray) []Intersection {
 	return xs
 }
 
-func (s *Sphere) SetTransform(m *core.Matrix) error {
+func (s *Sphere) SetTransform(m core.Matrix) error {
 	s.transform = m
 	s.invert = m.Invert()
 	return nil
 }
 
-func (s *Sphere) GetTransform() *core.Matrix {
+func (s *Sphere) GetTransform() core.Matrix {
 	return s.transform
 }
 
-func (s *Sphere) GetInverseTransform() *core.Matrix {
+func (s *Sphere) GetInverseTransform() core.Matrix {
 	return s.invert
 }
 

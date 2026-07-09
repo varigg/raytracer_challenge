@@ -14,7 +14,7 @@ var benchMatrix = core.NewMatrix([][]float64{
 })
 
 var (
-	sinkMatrix *core.Matrix
+	sinkMatrix core.Matrix
 	sinkTuple  core.Tuple
 )
 

@@ -38,3 +38,41 @@ BenchmarkLighting-12    	16650871	        71.28 ns/op	      88 B/op	       3 all
 PASS
 ok  	github.com/varigg/raytracer-challenge/pkg/shader	1.268s
 ```
+
+## 2026-07-09 — Checkpoint: after value semantics (Tasks 4–6)
+
+```
+goos: linux
+goarch: amd64
+pkg: github.com/varigg/raytracer-challenge/pkg/core
+cpu: AMD Ryzen 5 5600X 6-Core Processor             
+BenchmarkMatrixInvert-12    	   20614	     57640 ns/op	   55904 B/op	    2405 allocs/op
+BenchmarkMatrixTimes-12     	 7043257	       170.1 ns/op	     224 B/op	       5 allocs/op
+BenchmarkTupleOps-12        	137089489	         8.783 ns/op	       0 B/op	       0 allocs/op
+PASS
+ok  	github.com/varigg/raytracer-challenge/pkg/core	5.249s
+goos: linux
+goarch: amd64
+pkg: github.com/varigg/raytracer-challenge/pkg/objects
+cpu: AMD Ryzen 5 5600X 6-Core Processor             
+BenchmarkSphereIntersect-12    	11606737	       104.6 ns/op	     136 B/op	       3 allocs/op
+BenchmarkSphereNormalAt-12     	 8429895	       138.9 ns/op	     224 B/op	       5 allocs/op
+PASS
+ok  	github.com/varigg/raytracer-challenge/pkg/objects	2.648s
+goos: linux
+goarch: amd64
+pkg: github.com/varigg/raytracer-challenge/pkg/scene
+cpu: AMD Ryzen 5 5600X 6-Core Processor             
+BenchmarkCameraRender-12    	       4	 298647798 ns/op	281152124 B/op	12051358 allocs/op
+PASS
+ok  	github.com/varigg/raytracer-challenge/pkg/scene	2.398s
+goos: linux
+goarch: amd64
+pkg: github.com/varigg/raytracer-challenge/pkg/shader
+cpu: AMD Ryzen 5 5600X 6-Core Processor             
+BenchmarkLighting-12    	74946117	        16.17 ns/op	       0 B/op	       0 allocs/op
+PASS
+ok  	github.com/varigg/raytracer-challenge/pkg/shader	1.236s
+```
+
+Since baseline, `BenchmarkTupleOps` dropped from 48.36 ns/op (64 B/op, 2 allocs/op) to 8.783 ns/op (0 B/op, 0 allocs/op) and `BenchmarkLighting` dropped from 71.28 ns/op (88 B/op, 3 allocs/op) to 16.17 ns/op (0 B/op, 0 allocs/op), confirming the value-type conversions for `Tuple`/`Color` eliminated all heap allocation on those hot paths; `Matrix`-heavy benchmarks (`Invert`, `Times`, `SphereIntersect`, `SphereNormalAt`, `CameraRender`) also improved modestly since `Matrix` stayed a slice type and value receivers only avoid one extra pointer indirection/allocation for the header itself.

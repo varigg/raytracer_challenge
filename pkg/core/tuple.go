@@ -89,7 +89,7 @@ func (t Tuple) Equals(o Tuple) bool {
 		equals(t.Z, o.Z) && equals(t.W, o.W)
 }
 
-func (t Tuple) Transform(m *Matrix) Tuple {
+func (t Tuple) Transform(m Matrix) Tuple {
 	return m.MultiplyWithTuple(t)
 }
 

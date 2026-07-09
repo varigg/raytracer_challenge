@@ -19,7 +19,7 @@ func (r *Ray) Position(t float64) core.Tuple {
 	return r.Origin.Add(r.Direction.Multiply(t))
 }
 
-func (r *Ray) Transform(m *core.Matrix) *Ray {
+func (r *Ray) Transform(m core.Matrix) *Ray {
 	newRay := Ray{
 		Origin:    m.MultiplyWithTuple(r.Origin),
 		Direction: m.MultiplyWithTuple(r.Direction),
