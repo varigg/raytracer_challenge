@@ -18,7 +18,7 @@ type Camera struct {
 	HalfHeight float64
 }
 
-func ViewTransform(from, to, up *core.Tuple) *core.Matrix {
+func ViewTransform(from, to, up core.Tuple) *core.Matrix {
 	forward := to.Subtract(from).Normalize()
 	left := forward.Cross(up.Normalize())
 	trueUp := left.Cross(forward)

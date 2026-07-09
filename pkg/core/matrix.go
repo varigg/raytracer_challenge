@@ -75,14 +75,11 @@ func (m1 *Matrix) Times(m2 *Matrix) *Matrix {
 	return NewMatrix(result)
 }
 
-func (m *Matrix) MultiplyWithTuple(t *Tuple) *Tuple {
-	size := len(*m)
-	result := make([]float64, size)
-	for i := 0; i < size; i++ {
-		iTuple := NewTuple((*m)[i][0], (*m)[i][1], (*m)[i][2], (*m)[i][3])
-		result[i] = iTuple.Dot(t)
+func (m *Matrix) MultiplyWithTuple(t Tuple) Tuple {
+	row := func(i int) Tuple {
+		return NewTuple((*m)[i][0], (*m)[i][1], (*m)[i][2], (*m)[i][3])
 	}
-	return NewTuple(result[0], result[1], result[2], result[3])
+	return NewTuple(row(0).Dot(t), row(1).Dot(t), row(2).Dot(t), row(3).Dot(t))
 }
 
 func (m *Matrix) Transpose() *Matrix {

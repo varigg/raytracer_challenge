@@ -15,7 +15,7 @@ var benchMatrix = core.NewMatrix([][]float64{
 
 var (
 	sinkMatrix *core.Matrix
-	sinkTuple  *core.Tuple
+	sinkTuple  core.Tuple
 )
 
 func BenchmarkMatrixInvert(b *testing.B) {

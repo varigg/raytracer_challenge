@@ -3,11 +3,11 @@ package objects
 import "github.com/varigg/raytracer-challenge/pkg/core"
 
 type Ray struct {
-	Origin    *core.Tuple
-	Direction *core.Tuple
+	Origin    core.Tuple
+	Direction core.Tuple
 }
 
-func NewRay(origin, direction *core.Tuple) *Ray {
+func NewRay(origin, direction core.Tuple) *Ray {
 	r := Ray{
 		Origin:    origin,
 		Direction: direction,
@@ -15,7 +15,7 @@ func NewRay(origin, direction *core.Tuple) *Ray {
 	return &r
 }
 
-func (r *Ray) Position(t float64) *core.Tuple {
+func (r *Ray) Position(t float64) core.Tuple {
 	return r.Origin.Add(r.Direction.Multiply(t))
 }
 

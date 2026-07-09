@@ -15,7 +15,7 @@ type Sphere struct {
 	Material *shader.Material
 }
 
-var center *core.Tuple = core.NewPoint(0, 0, 0)
+var center = core.NewPoint(0, 0, 0)
 
 func NewSphere() *Sphere {
 	idInv := core.Identity(4).Invert()
@@ -61,7 +61,7 @@ func (s *Sphere) GetInverseTransform() *core.Matrix {
 	return s.invert
 }
 
-func (s *Sphere) NormalAt(worldPoint *core.Tuple) *core.Tuple {
+func (s *Sphere) NormalAt(worldPoint core.Tuple) core.Tuple {
 	objectPoint := s.invert.MultiplyWithTuple(worldPoint)
 	objectNormal := objectPoint.Subtract(center)
 	worldNormal := s.invert.Transpose().MultiplyWithTuple(objectNormal)

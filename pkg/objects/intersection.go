@@ -7,7 +7,7 @@ import (
 
 type Intersecter interface {
 	Intersect(*Ray) []Intersection
-	NormalAt(*core.Tuple) *core.Tuple
+	NormalAt(core.Tuple) core.Tuple
 	GetMaterial() *shader.Material
 }
 
