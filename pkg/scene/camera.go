@@ -8,15 +8,27 @@ import (
 )
 
 type Camera struct {
-	HSize int
-	VSize int
-	FOV   float64
-	// Todo: precompute inverse
-	Transform  core.Matrix
+	HSize      int
+	VSize      int
+	FOV        float64
 	PixelSize  float64
 	HalfWidth  float64
 	HalfHeight float64
+
+	transform core.Matrix
+	// inverse and origin cache transform.Invert() and the camera position;
+	// RayForPixel reads them for every pixel.
+	inverse core.Matrix
+	origin  core.Tuple
 }
+
+func (c *Camera) SetTransform(m core.Matrix) {
+	c.transform = m
+	c.inverse = m.Invert()
+	c.origin = c.inverse.MultiplyWithTuple(core.NewPoint(0, 0, 0))
+}
+
+func (c *Camera) Transform() core.Matrix { return c.transform }
 
 func ViewTransform(from, to, up core.Tuple) core.Matrix {
 	forward := to.Subtract(from).Normalize()
@@ -34,10 +46,9 @@ func ViewTransform(from, to, up core.Tuple) core.Matrix {
 
 func NewCamera(hsize, vsize int, fov float64) *Camera {
 	c := &Camera{
-		HSize:     hsize,
-		VSize:     vsize,
-		FOV:       fov,
-		Transform: core.Identity(4),
+		HSize: hsize,
+		VSize: vsize,
+		FOV:   fov,
 	}
 
 	halfView := math.Tan(fov / 2)
@@ -50,25 +61,19 @@ func NewCamera(hsize, vsize int, fov float64) *Camera {
 		c.HalfHeight = halfView
 	}
 	c.PixelSize = (c.HalfWidth * 2) / float64(c.HSize)
+	c.SetTransform(core.Identity(4))
 
 	return c
 }
 
 func (c *Camera) RayForPixel(x, y int) *objects.Ray {
 	xOffset := (float64(x) + .5) * c.PixelSize
-	yOffset := (.5 + float64(y)) * c.PixelSize
+	yOffset := (float64(y) + .5) * c.PixelSize
 	worldX := c.HalfWidth - xOffset
 	worldY := c.HalfHeight - yOffset
-	// inverse can be precomputed
-	transformI := c.Transform.Invert()
-	pixel := transformI.MultiplyWithTuple(core.NewPoint(worldX, worldY, -1))
-	// this can be precomputed
-	origin := transformI.MultiplyWithTuple(core.NewPoint(0, 0, 0))
-
-	direction := pixel.Subtract(origin).Normalize()
-
-	r := objects.NewRay(origin, direction)
-	return r
+	pixel := c.inverse.MultiplyWithTuple(core.NewPoint(worldX, worldY, -1))
+	direction := pixel.Subtract(c.origin).Normalize()
+	return objects.NewRay(c.origin, direction)
 }
 
 func (c *Camera) Render(w *World) *core.Canvas {

@@ -146,3 +146,19 @@ ok  	github.com/varigg/raytracer-challenge/pkg/objects	3.718s
 ```
 
 `BenchmarkSphereNormalAt` dropped from 136.8 ns/op to ~15 ns/op, a ~9× improvement from caching the inverse-transpose matrix to avoid redundant computation on every normal calculation.
+
+## 2026-07-09 — Perf: cached camera inverse
+
+```
+goos: linux
+goarch: amd64
+pkg: github.com/varigg/raytracer-challenge/pkg/scene
+cpu: AMD Ryzen 5 5600X 6-Core Processor             
+BenchmarkCameraRender-12    	    1176	    959564 ns/op	 1371187 B/op	   19696 allocs/op
+BenchmarkCameraRender-12    	    1242	    955439 ns/op	 1371184 B/op	   19696 allocs/op
+BenchmarkCameraRender-12    	    1242	    984178 ns/op	 1371188 B/op	   19696 allocs/op
+PASS
+ok  	github.com/varigg/raytracer-challenge/pkg/scene	3.847s
+```
+
+`BenchmarkCameraRender` dropped from 298219020 ns/op (281153410 B/op, 12051358 allocs/op) at the phases 1–3 checkpoint to ~966000 ns/op (1371186 B/op, 19696 allocs/op), a ~310× speedup and ~205× fewer allocations, from hoisting the per-pixel `Camera.Transform.Invert()` (and its redundant duplicate for the origin) out of `RayForPixel` into a single cache populated by `SetTransform`.

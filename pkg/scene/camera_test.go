@@ -36,7 +36,7 @@ func TestNewCamera(t *testing.T) {
 	assert.Equal(t, 160, c.HSize)
 	assert.Equal(t, 120, c.VSize)
 	assert.Equal(t, math.Pi/2, c.FOV)
-	assert.Equal(t, core.Identity(4), c.Transform)
+	assert.Equal(t, core.Identity(4), c.Transform())
 }
 func TestPixelSize(t *testing.T) {
 	c := scene.NewCamera(200, 125, math.Pi/2)
@@ -56,7 +56,7 @@ func TestRayForPixel(t *testing.T) {
 	assert.Equal(t, core.NewPoint(0, 0, 0), r.Origin)
 	assert.True(t, core.NewVector(0.66519, 0.33259, -0.66851).Equals(r.Direction))
 	// ray with transformed camera
-	c.Transform = core.RotationMatrixY(math.Pi / 4).Times(core.TranslationMatrix(0, -2, 5))
+	c.SetTransform(core.RotationMatrixY(math.Pi / 4).Times(core.TranslationMatrix(0, -2, 5)))
 	r = c.RayForPixel(100, 50)
 	assert.Equal(t, core.NewPoint(0, 2, -5), r.Origin)
 	assert.True(t, core.NewVector(math.Sqrt2/2, 0, -math.Sqrt2/2).Equals(r.Direction))
@@ -68,7 +68,7 @@ func TestRender(t *testing.T) {
 	from := core.NewPoint(0, 0, -5)
 	to := core.NewPoint(0, 0, 0)
 	up := core.NewVector(0, 1, 0)
-	c.Transform = scene.ViewTransform(from, to, up)
+	c.SetTransform(scene.ViewTransform(from, to, up))
 	image := c.Render(w)
 	assert.True(t, core.NewColor(0.38066, 0.47583, 0.2855).Equals(image.Get(5, 5)))
 }
