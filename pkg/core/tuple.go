@@ -1,6 +1,7 @@
 package core
 
 import (
+	"fmt"
 	"math"
 	"strconv"
 	"strings"
@@ -22,22 +23,35 @@ func NewVector(x, y, z float64) Tuple {
 	return NewTuple(x, y, z, 0)
 }
 
-func NewVectorFromString(v string) Tuple {
-	x, y, z := stringToCoordinates(v)
-	return NewVector(x, y, z)
+func NewVectorFromString(v string) (Tuple, error) {
+	x, y, z, err := stringToCoordinates(v)
+	if err != nil {
+		return Tuple{}, err
+	}
+	return NewVector(x, y, z), nil
 }
 
-func NewPointFromString(v string) Tuple {
-	x, y, z := stringToCoordinates(v)
-	return NewPoint(x, y, z)
+func NewPointFromString(v string) (Tuple, error) {
+	x, y, z, err := stringToCoordinates(v)
+	if err != nil {
+		return Tuple{}, err
+	}
+	return NewPoint(x, y, z), nil
 }
 
-func stringToCoordinates(v string) (float64, float64, float64) {
+func stringToCoordinates(v string) (x, y, z float64, err error) {
 	coords := strings.Split(v, ",")
-	x, _ := strconv.ParseFloat(strings.TrimSpace(coords[0]), 64)
-	y, _ := strconv.ParseFloat(strings.TrimSpace(coords[1]), 64)
-	z, _ := strconv.ParseFloat(strings.TrimSpace(coords[2]), 64)
-	return x, y, z
+	if len(coords) != 3 {
+		return 0, 0, 0, fmt.Errorf("expected 3 comma-separated coordinates, got %q", v)
+	}
+	dests := []*float64{&x, &y, &z}
+	for i, c := range coords {
+		*dests[i], err = strconv.ParseFloat(strings.TrimSpace(c), 64)
+		if err != nil {
+			return 0, 0, 0, fmt.Errorf("invalid coordinate %q in %q: %w", c, v, err)
+		}
+	}
+	return x, y, z, nil
 }
 
 func (t Tuple) IsVector() bool { return t.W == 0 }

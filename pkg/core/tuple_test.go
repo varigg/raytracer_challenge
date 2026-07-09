@@ -114,3 +114,19 @@ func TestReflect(t *testing.T) {
 	n = core.NewVector(math.Sqrt(2)/2, math.Sqrt(2)/2, 0)
 	assert.True(t, core.NewVector(1, 0, 0).Equals(v.Reflect(n)))
 }
+
+func TestNewPointFromStringParsesCoordinates(t *testing.T) {
+	p, err := core.NewPointFromString(" 1, -2.5, 3 ")
+	assert.NoError(t, err)
+	assert.True(t, p.Equals(core.NewPoint(1, -2.5, 3)))
+}
+
+func TestNewPointFromStringRejectsWrongArity(t *testing.T) {
+	_, err := core.NewPointFromString("1,2")
+	assert.Error(t, err)
+}
+
+func TestNewVectorFromStringRejectsGarbage(t *testing.T) {
+	_, err := core.NewVectorFromString("1,two,3")
+	assert.Error(t, err)
+}

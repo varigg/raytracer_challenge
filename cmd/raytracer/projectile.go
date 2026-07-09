@@ -17,14 +17,24 @@ var projectileCmd = &cobra.Command{
 	Aliases: []string{"chapter1"},
 	Short:   "computes how far a projectile flies until it hits y=0",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		p := projectile{
-			position: core.NewPointFromString(origin),
-			velocity: core.NewVectorFromString(velocity),
+		position, err := core.NewPointFromString(origin)
+		if err != nil {
+			return fmt.Errorf("--origin: %w", err)
 		}
-		env := environment{
-			gravity: core.NewVectorFromString(gravity),
-			wind:    core.NewVectorFromString(wind),
+		vel, err := core.NewVectorFromString(velocity)
+		if err != nil {
+			return fmt.Errorf("--velocity: %w", err)
 		}
+		grav, err := core.NewVectorFromString(gravity)
+		if err != nil {
+			return fmt.Errorf("--gravity: %w", err)
+		}
+		wnd, err := core.NewVectorFromString(wind)
+		if err != nil {
+			return fmt.Errorf("--wind: %w", err)
+		}
+		p := projectile{position: position, velocity: vel}
+		env := environment{gravity: grav, wind: wnd}
 		distance := 0
 		for p.position.Y > 0 {
 			fmt.Println(p.position.X)
@@ -41,14 +51,24 @@ var projectileGraphCmd = &cobra.Command{
 	Aliases: []string{"chapter2"},
 	Short:   "plots trajectory of a projectile",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		p := projectile{
-			position: core.NewPointFromString(origin),
-			velocity: core.NewVectorFromString(velocity),
+		position, err := core.NewPointFromString(origin)
+		if err != nil {
+			return fmt.Errorf("--origin: %w", err)
 		}
-		env := environment{
-			gravity: core.NewVectorFromString(gravity),
-			wind:    core.NewVectorFromString(wind),
+		vel, err := core.NewVectorFromString(velocity)
+		if err != nil {
+			return fmt.Errorf("--velocity: %w", err)
 		}
+		grav, err := core.NewVectorFromString(gravity)
+		if err != nil {
+			return fmt.Errorf("--gravity: %w", err)
+		}
+		wnd, err := core.NewVectorFromString(wind)
+		if err != nil {
+			return fmt.Errorf("--wind: %w", err)
+		}
+		p := projectile{position: position, velocity: vel}
+		env := environment{gravity: grav, wind: wnd}
 		positions := make([]core.Tuple, 0)
 		maxX, maxY := 0.0, 0.0
 		positions = append(positions, p.position)
