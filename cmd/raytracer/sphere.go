@@ -17,7 +17,7 @@ var sphereShadowCmd = &cobra.Command{
 	Use:     "shadow",
 	Aliases: []string{"chapter5"},
 	Short:   "draws the shadow of a sphere on a wall using raytracing",
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 
 		// Set up canvas
 		pixels := 500
@@ -48,7 +48,7 @@ var sphereShadowCmd = &cobra.Command{
 				}
 			}
 		}
-		canvas.SavePNG("shadow.png")
+		return canvas.SavePNG("shadow.png")
 	},
 }
 
@@ -56,7 +56,7 @@ var sphereCmd = &cobra.Command{
 	Use:     "sphere",
 	Aliases: []string{"chapter6"},
 	Short:   "draws a sphere using raytracing",
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 
 		// Set up canvas
 		pixels := 500
@@ -96,7 +96,7 @@ var sphereCmd = &cobra.Command{
 				}
 			}
 		}
-		canvas.SavePNG("sphere.png")
+		return canvas.SavePNG("sphere.png")
 	},
 }
 

@@ -16,7 +16,7 @@ var projectileCmd = &cobra.Command{
 	Use:     "projectile",
 	Aliases: []string{"chapter1"},
 	Short:   "computes how far a projectile flies until it hits y=0",
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		p := projectile{
 			position: core.NewPointFromString(origin),
 			velocity: core.NewVectorFromString(velocity),
@@ -32,7 +32,7 @@ var projectileCmd = &cobra.Command{
 			distance += 1
 		}
 		fmt.Println(distance)
-
+		return nil
 	},
 }
 
@@ -40,7 +40,7 @@ var projectileGraphCmd = &cobra.Command{
 	Use:     "projectile-graph",
 	Aliases: []string{"chapter2"},
 	Short:   "plots trajectory of a projectile",
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		p := projectile{
 			position: core.NewPointFromString(origin),
 			velocity: core.NewVectorFromString(velocity),
@@ -70,7 +70,7 @@ var projectileGraphCmd = &cobra.Command{
 			y := canvas.Height - int(positions[i].Y) - 5
 			DrawSquare(canvas, x, y, red)
 		}
-		canvas.SavePPM("canvas.ppm")
+		return canvas.SavePPM("canvas.ppm")
 	},
 }
 

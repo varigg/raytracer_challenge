@@ -1,11 +1,13 @@
 package core
 
 import (
+	"bufio"
 	"fmt"
 	"image"
 	"image/png"
 	"io"
 	"os"
+	"strconv"
 )
 
 const maxColorValue = 255
@@ -37,72 +39,53 @@ func (c *Canvas) Set(x, y int, color *Color) {
 	c.pixels[x][y] = *color
 }
 
-func (c *Canvas) ToPPM(writer io.Writer) error {
-	ppm := fmt.Sprintf("P3\n%d %d\n%d\n", c.Width, c.Height, maxColorValue)
-	_, err := writer.Write([]byte(ppm))
-	if err != nil {
-		return err
-	}
-	var currentLineLength int
-
-	for y := range c.Height {
-		for x := range c.Width {
+func (c *Canvas) ToPPM(w io.Writer) error {
+	bw := bufio.NewWriter(w)
+	fmt.Fprintf(bw, "P3\n%d %d\n%d\n", c.Width, c.Height, maxColorValue)
+	var lineLen int
+	for y := 0; y < c.Height; y++ {
+		for x := 0; x < c.Width; x++ {
 			rgb := c.Get(x, y).ToRGBA(maxColorValue)
-			for _, color := range []uint8{rgb.R, rgb.G, rgb.B} {
-				str := fmt.Sprintf("%d", color)
-				if currentLineLength > 0 && currentLineLength+1+len(str) > 70 {
-					// Add a new line if the accumulated line length exceeds 70 characters
-					writer.Write([]byte("\n"))
-					currentLineLength = 0
+			for _, v := range []uint8{rgb.R, rgb.G, rgb.B} {
+				s := strconv.Itoa(int(v))
+				if lineLen > 0 && lineLen+1+len(s) > 70 {
+					bw.WriteByte('\n')
+					lineLen = 0
 				}
-				if currentLineLength > 0 {
-					writer.Write([]byte(" "))
-					currentLineLength++
+				if lineLen > 0 {
+					bw.WriteByte(' ')
+					lineLen++
 				}
-				writer.Write([]byte(str))
-				currentLineLength += len(str)
+				bw.WriteString(s)
+				lineLen += len(s)
 			}
 		}
-		writer.Write([]byte("\n"))
-		currentLineLength = 0
+		bw.WriteByte('\n')
+		lineLen = 0
 	}
-	return nil
+	return bw.Flush()
 }
 
 func (c *Canvas) SavePPM(fileName string) error {
 	file, err := os.Create(fileName)
 	if err != nil {
-		return fmt.Errorf("failed to create file: %v", err)
+		return fmt.Errorf("create %s: %w", fileName, err)
 	}
 	defer file.Close()
-
-	err = c.ToPPM(file)
-	if err != nil {
-		return fmt.Errorf("failed to write to file: %v", err)
-	}
-
-	fmt.Printf("PPM content successfully written to %s\n", fileName)
-	return nil
+	return c.ToPPM(file)
 }
 
-func (c *Canvas) SavePNG(filename string) {
+func (c *Canvas) SavePNG(filename string) error {
 	img := image.NewRGBA(image.Rect(0, 0, c.Width, c.Height))
-
-	for y := 0; y < c.Height; y += 1 {
-		for x := 0; x < c.Width; x += 1 {
-			pixel := c.Get(x, y)
-			c := pixel.ToRGBA(maxColorValue)
-			img.Set(x, y, c)
+	for y := 0; y < c.Height; y++ {
+		for x := 0; x < c.Width; x++ {
+			img.Set(x, y, c.Get(x, y).ToRGBA(maxColorValue))
 		}
 	}
-
 	f, err := os.Create(filename)
-	defer f.Close()
 	if err != nil {
-		fmt.Println(err)
-		f.Close()
-		return
+		return fmt.Errorf("create %s: %w", filename, err)
 	}
-
-	png.Encode(f, img)
+	defer f.Close()
+	return png.Encode(f, img)
 }

@@ -2,6 +2,8 @@ package core_test
 
 import (
 	"bytes"
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -63,4 +65,19 @@ func TestPPMLineLength(t *testing.T) {
 	ppm := buf.String()
 	assert.Equal(t, output, ppm)
 	assert.Equal(t, "\n", string(ppm[len(ppm)-1]))
+}
+
+func TestSavePNGReturnsErrorForBadPath(t *testing.T) {
+	c := core.NewCanvas(2, 2)
+	err := c.SavePNG(filepath.Join(t.TempDir(), "no-such-dir", "out.png"))
+	assert.Error(t, err)
+}
+
+func TestSavePNGWritesFile(t *testing.T) {
+	c := core.NewCanvas(2, 2)
+	path := filepath.Join(t.TempDir(), "out.png")
+	assert.NoError(t, c.SavePNG(path))
+	info, err := os.Stat(path)
+	assert.NoError(t, err)
+	assert.Greater(t, info.Size(), int64(0))
 }

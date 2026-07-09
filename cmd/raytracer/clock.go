@@ -11,7 +11,7 @@ var clockCmd = &cobra.Command{
 	Use:     "clock",
 	Aliases: []string{"chapter4"},
 	Short:   "draws a clock face using matrix operations",
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		r := core.RotationMatrixY(2.0 * math.Pi / 12.0)
 		var x, y int
 		current := core.NewPoint(0.0, 0.0, 1.0)
@@ -27,8 +27,10 @@ var clockCmd = &cobra.Command{
 
 			current = r.MultiplyWithTuple(current)
 		}
-		c.SavePPM("clock.ppm")
-		c.SavePNG("clock.png")
+		if err := c.SavePPM("clock.ppm"); err != nil {
+			return err
+		}
+		return c.SavePNG("clock.png")
 	},
 }
 
