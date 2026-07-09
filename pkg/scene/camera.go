@@ -2,6 +2,7 @@ package scene
 
 import (
 	"math"
+	"sync"
 
 	"github.com/varigg/raytracer-challenge/pkg/core"
 	"github.com/varigg/raytracer-challenge/pkg/objects"
@@ -78,12 +79,16 @@ func (c *Camera) RayForPixel(x, y int) *objects.Ray {
 
 func (c *Camera) Render(w *World) *core.Canvas {
 	image := core.NewCanvas(c.HSize, c.VSize)
-	for y := range c.VSize {
-		for x := range c.HSize {
-			ray := c.RayForPixel(x, y)
-			color := w.ColorAt(ray)
-			image.Set(x, y, color)
-		}
+	var wg sync.WaitGroup
+	for y := 0; y < c.VSize; y++ {
+		wg.Add(1)
+		go func(y int) {
+			defer wg.Done()
+			for x := 0; x < c.HSize; x++ {
+				image.Set(x, y, w.ColorAt(c.RayForPixel(x, y)))
+			}
+		}(y)
 	}
+	wg.Wait()
 	return image
 }

@@ -161,4 +161,70 @@ PASS
 ok  	github.com/varigg/raytracer-challenge/pkg/scene	3.847s
 ```
 
-`BenchmarkCameraRender` dropped from 298219020 ns/op (281153410 B/op, 12051358 allocs/op) at the phases 1–3 checkpoint to ~966000 ns/op (1371186 B/op, 19696 allocs/op), a ~310× speedup and ~205× fewer allocations, from hoisting the per-pixel `Camera.Transform.Invert()` (and its redundant duplicate for the origin) out of `RayForPixel` into a single cache populated by `SetTransform`.
+`BenchmarkCameraRender` dropped from 298219020 ns/op (281153410 B/op, 12051358 allocs/op) at the phases 1–3 checkpoint to ~966000 ns/op (1371186 B/op, 19696 allocs/op), a ~310× speedup, ~205× fewer bytes allocated, and ~612× fewer allocations, from hoisting the per-pixel `Camera.Transform.Invert()` (and its redundant duplicate for the origin) out of `RayForPixel` into a single cache populated by `SetTransform`.
+
+## 2026-07-09 — Final (after Phase 4)
+
+```
+goos: linux
+goarch: amd64
+pkg: github.com/varigg/raytracer-challenge/pkg/core
+cpu: AMD Ryzen 5 5600X 6-Core Processor             
+BenchmarkMatrixInvert-12    	   79803	     14552 ns/op	   14144 B/op	     605 allocs/op
+BenchmarkMatrixInvert-12    	   79508	     14620 ns/op	   14144 B/op	     605 allocs/op
+BenchmarkMatrixInvert-12    	   79656	     14730 ns/op	   14144 B/op	     605 allocs/op
+BenchmarkMatrixTimes-12     	 7464505	       160.4 ns/op	     224 B/op	       5 allocs/op
+BenchmarkMatrixTimes-12     	 7413759	       168.1 ns/op	     224 B/op	       5 allocs/op
+BenchmarkMatrixTimes-12     	 7377282	       164.9 ns/op	     224 B/op	       5 allocs/op
+BenchmarkTupleOps-12        	133143684	         8.996 ns/op	       0 B/op	       0 allocs/op
+BenchmarkTupleOps-12        	132990475	         8.884 ns/op	       0 B/op	       0 allocs/op
+BenchmarkTupleOps-12        	135889078	         8.836 ns/op	       0 B/op	       0 allocs/op
+PASS
+ok  	github.com/varigg/raytracer-challenge/pkg/core	14.426s
+goos: linux
+goarch: amd64
+pkg: github.com/varigg/raytracer-challenge/pkg/objects
+cpu: AMD Ryzen 5 5600X 6-Core Processor             
+BenchmarkSphereIntersect-12    	11612594	       104.3 ns/op	     136 B/op	       3 allocs/op
+BenchmarkSphereIntersect-12    	11473344	       104.1 ns/op	     136 B/op	       3 allocs/op
+BenchmarkSphereIntersect-12    	11500155	       106.5 ns/op	     136 B/op	       3 allocs/op
+BenchmarkSphereNormalAt-12     	80172000	        14.91 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSphereNormalAt-12     	79947649	        14.87 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSphereNormalAt-12     	81475776	        14.90 ns/op	       0 B/op	       0 allocs/op
+PASS
+ok  	github.com/varigg/raytracer-challenge/pkg/objects	7.607s
+goos: linux
+goarch: amd64
+pkg: github.com/varigg/raytracer-challenge/pkg/scene
+cpu: AMD Ryzen 5 5600X 6-Core Processor             
+BenchmarkCameraRender-12    	    1899	    700588 ns/op	 1374877 B/op	   19797 allocs/op
+BenchmarkCameraRender-12    	    1783	    697973 ns/op	 1374882 B/op	   19797 allocs/op
+BenchmarkCameraRender-12    	    1706	    704208 ns/op	 1374878 B/op	   19797 allocs/op
+PASS
+ok  	github.com/varigg/raytracer-challenge/pkg/scene	3.989s
+goos: linux
+goarch: amd64
+pkg: github.com/varigg/raytracer-challenge/pkg/shader
+cpu: AMD Ryzen 5 5600X 6-Core Processor             
+BenchmarkLighting-12    	73796630	        16.55 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLighting-12    	74143182	        16.30 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLighting-12    	74821405	        16.20 ns/op	       0 B/op	       0 allocs/op
+PASS
+ok  	github.com/varigg/raytracer-challenge/pkg/shader	3.702s
+```
+
+`BenchmarkCameraRender` dropped further from ~966000 ns/op (1371186 B/op, 19696 allocs/op) to ~701000 ns/op (1374878 B/op, 19797 allocs/op), a further ~1.4× speedup from scanline-level parallelism (goroutine per row, `sync.WaitGroup`) on a 12-vCPU host; the small residual allocation increase (~101 B/op, ~101 allocs/op) is per-goroutine closure/scheduling overhead. All other benchmarks (`MatrixInvert`, `MatrixTimes`, `TupleOps`, `SphereIntersect`, `SphereNormalAt`, `Lighting`) are unchanged within noise, as expected — Task 13 touched only `Camera.Render`.
+
+## Summary
+
+| Benchmark | Baseline | After value semantics | Final |
+|---|---|---|---|
+| BenchmarkMatrixInvert | 65621 ns/op | 57640 ns/op | 14552–14730 ns/op |
+| BenchmarkMatrixTimes | 206.5 ns/op | 170.1 ns/op | 160.4–168.1 ns/op |
+| BenchmarkTupleOps | 48.36 ns/op | 8.783 ns/op | 8.836–8.996 ns/op |
+| BenchmarkSphereIntersect | 145.8 ns/op | 104.6 ns/op | 104.1–106.5 ns/op |
+| BenchmarkSphereNormalAt | 237.2 ns/op | 138.9 ns/op | 14.87–14.91 ns/op |
+| BenchmarkCameraRender | 369954233 ns/op | 298647798 ns/op | 697973–704208 ns/op |
+| BenchmarkLighting | 71.28 ns/op | 16.17 ns/op | 16.20–16.55 ns/op |
+
+Two wins dominate the overall trajectory: caching the camera's inverse transform and ray origin in `SetTransform` (instead of recomputing `Matrix.Invert()` on every pixel in `RayForPixel`) collapsed `BenchmarkCameraRender` by ~310× on its own, and the `Tuple`/`Color` value-type conversions eliminated heap allocation entirely on the innermost per-pixel math (`BenchmarkTupleOps`, `BenchmarkLighting` both go to 0 B/op, 0 allocs/op), which is what let the scanline-parallel `Render` in this task scale cleanly without lock contention or GC pressure swamping the goroutines. Scanline parallelism itself contributes a further, comparatively modest ~1.4× on this 6-core/12-thread host — consistent with a render workload that, after the earlier allocation and inverse-caching work, is no longer allocation- or single-core-bound enough to yield a full 12× from parallelism alone.
