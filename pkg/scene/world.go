@@ -29,14 +29,11 @@ func NewDefaultWorld() *World {
 	m.Color = core.NewColor(.8, 1, .6)
 	m.Diffuse = .7
 	m.Specular = .2
-	outerSphere.Material = m
+	outerSphere.SetMaterial(m)
 	w.Objects[0] = outerSphere
 	// Inner sphere (book default: just scaled, default material)
 	innerSphere := objects.NewSphere()
-	err := innerSphere.SetTransform(core.ScalingMatrix(.5, .5, .5))
-	if err != nil {
-		return nil
-	}
+	innerSphere.SetTransform(core.ScalingMatrix(.5, .5, .5))
 	w.Objects[1] = innerSphere
 	return w
 }
@@ -53,7 +50,7 @@ func (w *World) Intersect(ray *objects.Ray) []objects.Intersection {
 }
 
 func (w *World) ShadeHit(comps *Computations) core.Color {
-	return w.Light.Lighting(comps.Object.GetMaterial(), comps.Point, comps.EyeV, comps.NormalV)
+	return w.Light.Lighting(comps.Object.Material(), comps.Point, comps.EyeV, comps.NormalV)
 }
 
 func (w *World) ColorAt(ray *objects.Ray) core.Color {

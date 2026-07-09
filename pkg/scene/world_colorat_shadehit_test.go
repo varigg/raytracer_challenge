@@ -14,34 +14,34 @@ func TestColorAt_HitsCorrectObject(t *testing.T) {
 	w := scene.NewDefaultWorld()
 	outer := w.Objects[0]
 	inner := w.Objects[1]
-	outer.GetMaterial().Ambient = 1
-	inner.GetMaterial().Ambient = 1
+	outer.Material().Ambient = 1
+	inner.Material().Ambient = 1
 
 	r := objects.NewRay(core.NewPoint(0, 0, 0.75), core.NewVector(0, 0, -1))
 	color := w.ColorAt(r)
 	// The ray hits the inner sphere first, so expect its color
-	assert.True(t, inner.GetMaterial().Color.Equals(color), "ColorAt should return the color of the inner object hit by the ray")
+	assert.True(t, inner.Material().Color.Equals(color), "ColorAt should return the color of the inner object hit by the ray")
 }
 
 // Test that when ambient is 1, the result is exactly the material color
 func TestShadeHit_AmbientOnly(t *testing.T) {
 	w := scene.NewDefaultWorld()
 	shape := w.Objects[0]
-	shape.GetMaterial().Ambient = 1
-	shape.GetMaterial().Diffuse = 0
-	shape.GetMaterial().Specular = 0
+	shape.Material().Ambient = 1
+	shape.Material().Diffuse = 0
+	shape.Material().Specular = 0
 	r := objects.NewRay(core.NewPoint(0, 0, -5), core.NewVector(0, 0, 1))
 	i := objects.NewIntersection(4, shape)
 	comps := scene.PrepareComputations(&i, r)
 	color := w.ShadeHit(comps)
-	assert.True(t, shape.GetMaterial().Color.Equals(color), "ShadeHit should return the material color when ambient=1 and others=0")
+	assert.True(t, shape.Material().Color.Equals(color), "ShadeHit should return the material color when ambient=1 and others=0")
 }
 
 // Test that the intersection order is correct when the ray starts inside an object
 func TestIntersectionOrder_RayStartsInside(t *testing.T) {
 	w := scene.NewDefaultWorld()
-	t.Logf("Outer sphere transform: %v", w.Objects[0].GetTransform())
-	t.Logf("Inner sphere transform: %v", w.Objects[1].GetTransform())
+	t.Logf("Outer sphere transform: %v", w.Objects[0].(*objects.Sphere).Transform())
+	t.Logf("Inner sphere transform: %v", w.Objects[1].(*objects.Sphere).Transform())
 	// Start the ray inside the inner sphere (radius 0.5, centered at origin)
 	r := objects.NewRay(core.NewPoint(0, 0, 0.1), core.NewVector(0, 0, 1))
 	xs := w.Intersect(r)

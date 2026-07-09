@@ -17,11 +17,12 @@ var sceneCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		floor := objects.NewSphere()
 		floor.SetTransform(core.ScalingMatrix(10, 0.01, 10))
-		floor.Material = shader.NewMaterial()
-		floor.Material.Color = core.NewColor(1, 0.9, 0.9)
-		floor.Material.Specular = 0
-		floor.Material.Ambient = 0.1
-		floor.Material.Diffuse = 0.9
+		floorMat := shader.NewMaterial()
+		floorMat.Color = core.NewColor(1, 0.9, 0.9)
+		floorMat.Specular = 0
+		floorMat.Ambient = 0.1
+		floorMat.Diffuse = 0.9
+		floor.SetMaterial(floorMat)
 
 		leftWall := objects.NewSphere()
 		leftWall.SetTransform(
@@ -29,9 +30,9 @@ var sceneCmd = &cobra.Command{
 				core.RotationMatrixY(-math.Pi / 4).Times(
 					core.RotationMatrixX(math.Pi / 2).Times(
 						core.ScalingMatrix(10, .01, 10)))))
-		leftWall.Material = floor.Material
-		leftWall.Material.Ambient = 0.1
-		leftWall.Material.Diffuse = 0.9
+		leftWall.SetMaterial(floor.Material())
+		leftWall.Material().Ambient = 0.1
+		leftWall.Material().Diffuse = 0.9
 
 		rightWall := objects.NewSphere()
 		rightWall.SetTransform(
@@ -39,34 +40,37 @@ var sceneCmd = &cobra.Command{
 				core.RotationMatrixY(math.Pi / 4).Times(
 					core.RotationMatrixX(math.Pi / 2).Times(
 						core.ScalingMatrix(10, .01, 10)))))
-		rightWall.Material = floor.Material
-		rightWall.Material.Ambient = 0.1
-		rightWall.Material.Diffuse = 0.9
+		rightWall.SetMaterial(floor.Material())
+		rightWall.Material().Ambient = 0.1
+		rightWall.Material().Diffuse = 0.9
 
 		middle := objects.NewSphere()
 		middle.SetTransform(core.TranslationMatrix(-0.5, 1, 0.5))
-		middle.Material = shader.NewMaterial()
-		middle.Material.Color = core.NewColor(0.1, 1, 0.5)
-		middle.Material.Diffuse = 0.7
-		middle.Material.Specular = 0.3
-		middle.Material.Ambient = 0.1
+		middleMat := shader.NewMaterial()
+		middleMat.Color = core.NewColor(0.1, 1, 0.5)
+		middleMat.Diffuse = 0.7
+		middleMat.Specular = 0.3
+		middleMat.Ambient = 0.1
+		middle.SetMaterial(middleMat)
 
 		right := objects.NewSphere()
 		right.SetTransform(core.TranslationMatrix(1.5, 0.5, -0.5).Times(core.ScalingMatrix(0.5, 0.5, 0.5)))
-		right.Material = shader.NewMaterial()
-		right.Material.Color = core.NewColor(0.5, 1, 0.1)
-		right.Material.Diffuse = 0.7
-		right.Material.Specular = 0.3
-		right.Material.Ambient = 0.1
+		rightMat := shader.NewMaterial()
+		rightMat.Color = core.NewColor(0.5, 1, 0.1)
+		rightMat.Diffuse = 0.7
+		rightMat.Specular = 0.3
+		rightMat.Ambient = 0.1
+		right.SetMaterial(rightMat)
 
 		left := objects.NewSphere()
-		left.Material = shader.NewMaterial()
-		left.Material.Color = core.NewColor(1, 0.8, 0.1)
+		leftMat := shader.NewMaterial()
+		leftMat.Color = core.NewColor(1, 0.8, 0.1)
 		left.SetTransform(core.TranslationMatrix(-1.5, 0.333, -0.75).Times(core.ScalingMatrix(0.33, 0.33, 0.33)))
-		left.Material.Color = core.NewColor(1, 0.8, 0.1)
-		left.Material.Diffuse = 0.7
-		left.Material.Specular = 0.3
-		left.Material.Ambient = 0.1
+		leftMat.Color = core.NewColor(1, 0.8, 0.1)
+		leftMat.Diffuse = 0.7
+		leftMat.Specular = 0.3
+		leftMat.Ambient = 0.1
+		left.SetMaterial(leftMat)
 
 		world := scene.NewWorld()
 		world.Add(floor, leftWall, rightWall, middle, right, left)

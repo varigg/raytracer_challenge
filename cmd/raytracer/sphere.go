@@ -73,7 +73,7 @@ var sphereCmd = &cobra.Command{
 		shape := objects.NewSphere()
 		mat := shader.NewMaterial()
 		mat.Color = core.NewColor(1, 0.2, 1)
-		shape.Material = mat
+		shape.SetMaterial(mat)
 		//shape.SetTransform(core.ScalingMatrix(1, 0.5, 1))
 		light := shader.NewLight(core.NewPoint(-10, 10, -10), core.NewColor(1, 1, 1))
 		for y := 0; y < pixels; y += 1 {

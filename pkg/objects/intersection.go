@@ -1,22 +1,11 @@
 package objects
 
-import (
-	"github.com/varigg/raytracer-challenge/pkg/core"
-	"github.com/varigg/raytracer-challenge/pkg/shader"
-)
-
-type Intersecter interface {
-	Intersect(*Ray) []Intersection
-	NormalAt(core.Tuple) core.Tuple
-	GetMaterial() *shader.Material
-}
-
 type Intersection struct {
 	T      float64
-	Object Intersecter
+	Object Object
 }
 
-func NewIntersection(t float64, object Intersecter) Intersection {
+func NewIntersection(t float64, object Object) Intersection {
 	i := Intersection{
 		T:      t,
 		Object: object,

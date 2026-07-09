@@ -62,7 +62,7 @@ func TestWorld_AddTranslatedSphere_NoDuplicate(t *testing.T) {
 	// There should be exactly one object in the world
 	assert.Equal(t, 1, len(w.Objects), "World should contain exactly one object after adding a translated sphere")
 	// The transform of the object should match what we set
-	assert.True(t, core.TranslationMatrix(-0.5, 0, 0).Equals(w.Objects[0].GetTransform()), "Sphere transform should match the translation applied")
+	assert.True(t, core.TranslationMatrix(-0.5, 0, 0).Equals(w.Objects[0].(*objects.Sphere).Transform()), "Sphere transform should match the translation applied")
 }
 
 func TestNewWorld(t *testing.T) {
@@ -88,8 +88,8 @@ func TestNewDefaultWorld(t *testing.T) {
 	w := scene.NewDefaultWorld()
 	light := shader.NewLight(core.NewPoint(-10, 10, -10), core.NewColor(1, 1, 1))
 	assert.Equal(t, light, w.Light)
-	assert.Equal(t, w.Objects[0].GetMaterial().Diffuse, .7)
-	assert.Equal(t, w.Objects[1].(*objects.Sphere).GetTransform(), core.ScalingMatrix(.5, .5, .5))
+	assert.Equal(t, w.Objects[0].Material().Diffuse, .7)
+	assert.Equal(t, w.Objects[1].(*objects.Sphere).Transform(), core.ScalingMatrix(.5, .5, .5))
 }
 
 // Scenario: Intersect a world with a ray
@@ -170,10 +170,10 @@ func TestColorRayHit(t *testing.T) {
 func TestColorRayInside(t *testing.T) {
 	w := scene.NewDefaultWorld()
 	outer := w.Objects[0]
-	outer.GetMaterial().Ambient = 1
+	outer.Material().Ambient = 1
 	inner := w.Objects[1]
-	inner.GetMaterial().Ambient = 1
+	inner.Material().Ambient = 1
 	r := objects.NewRay(core.NewPoint(0, 0, 0.75), core.NewVector(0, 0, -1))
 	c := w.ColorAt(r)
-	assert.True(t, inner.GetMaterial().Color.Equals(c))
+	assert.True(t, inner.Material().Color.Equals(c))
 }
