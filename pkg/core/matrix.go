@@ -142,11 +142,14 @@ func (m Matrix) IsInvertible() bool {
 }
 func (m Matrix) Invert() Matrix {
 	size := len(m)
+	det := m.Determinant()
+	if det == 0 {
+		panic("matrix is not invertible")
+	}
 	result := NewEmptyMatrix(size)
 	for i := 0; i < size; i++ {
 		for j := 0; j < size; j++ {
-			c := m.Cofactor(i, j)
-			result[j][i] = c / m.Determinant()
+			result[j][i] = m.Cofactor(i, j) / det
 		}
 	}
 	return result

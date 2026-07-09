@@ -114,3 +114,19 @@ ok  	github.com/varigg/raytracer-challenge/pkg/shader	1.230s
 ```
 
 Numbers are ~flat vs. the Task 6 checkpoint, as expected — Phase 3 (Task 7–9) was a structural dedup of the CLI layer and the `Object` interface, with no changes to the hot math/render paths.
+
+## 2026-07-09 — Perf: Invert determinant hoist
+
+```
+goos: linux
+goarch: amd64
+pkg: github.com/varigg/raytracer-challenge/pkg/core
+cpu: AMD Ryzen 5 5600X 6-Core Processor             
+BenchmarkMatrixInvert-12    	   81429	     14552 ns/op	   14144 B/op	     605 allocs/op
+BenchmarkMatrixInvert-12    	   81880	     14623 ns/op	   14144 B/op	     605 allocs/op
+BenchmarkMatrixInvert-12    	   81908	     14745 ns/op	   14144 B/op	     605 allocs/op
+PASS
+ok  	github.com/varigg/raytracer-challenge/pkg/core	4.046s
+```
+
+`BenchmarkMatrixInvert` dropped from 57884 ns/op to 14640 ns/op, a 4× improvement from hoisting the determinant computation out of the double loop and eliminating 15 redundant O(n!) cofactor expansions.
