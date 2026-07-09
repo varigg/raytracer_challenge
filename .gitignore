@@ -20,3 +20,6 @@
 
 # put binaries in dist folder
 dist/
+
+# git worktrees
+.worktrees/
