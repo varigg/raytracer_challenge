@@ -3,6 +3,7 @@ package raytracer
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -15,6 +16,8 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 	},
+	SilenceErrors: true,
+	SilenceUsage:  true,
 }
 
 var outputFile string
@@ -31,7 +34,7 @@ func saveCanvas(c *core.Canvas, defaultName string) error {
 	if name == "" {
 		name = defaultName
 	}
-	if strings.HasSuffix(name, ".ppm") {
+	if strings.EqualFold(filepath.Ext(name), ".ppm") {
 		return c.SavePPM(name)
 	}
 	return c.SavePNG(name)
@@ -39,7 +42,7 @@ func saveCanvas(c *core.Canvas, defaultName string) error {
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Fprintf(os.Stderr, "Whoops. There was an error while executing your CLI '%s'", err)
+		fmt.Fprintln(os.Stderr, "Error:", err)
 		os.Exit(1)
 	}
 }

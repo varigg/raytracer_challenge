@@ -90,13 +90,12 @@ func (m Matrix) Transpose() Matrix {
 }
 
 func (m Matrix) Determinant() float64 {
-	data := m
 	var determinant float64
-	if len(data) == 2 {
-		determinant = data[0][0]*data[1][1] - data[0][1]*data[1][0]
+	if len(m) == 2 {
+		determinant = m[0][0]*m[1][1] - m[0][1]*m[1][0]
 	} else {
-		for column := 0; column < len(data); column += 1 {
-			determinant += data[0][column] * m.Cofactor(0, column)
+		for column := 0; column < len(m); column += 1 {
+			determinant += m[0][column] * m.Cofactor(0, column)
 
 		}
 	}
@@ -106,14 +105,13 @@ func (m Matrix) Determinant() float64 {
 }
 
 func (m Matrix) SubMatrix(rowIndex, columnIndex int) Matrix {
-	data := m
 	result := make([][]float64, 0)
 	for i := 0; i < m.Size(); i++ {
 		if i != rowIndex {
 			row := make([]float64, 0)
 			for j := 0; j < m.Size(); j++ {
 				if j != columnIndex {
-					row = append(row, data[i][j])
+					row = append(row, m[i][j])
 				}
 			}
 			result = append(result, row)

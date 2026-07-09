@@ -21,8 +21,9 @@ func newSphere(transform core.Matrix, mat *shader.Material) *objects.Sphere {
 	return s
 }
 
-// renderOnWall shoots a ray from a fixed origin at every pixel of a 7x7 wall
-// at z=10 and paints pixels where shape is hit, using shade for the color.
+// renderOnWall renders a 500x500 canvas mapped onto a 7x7 world-unit wall at
+// z=10, shooting a ray from a fixed origin at every pixel and painting pixels
+// where shape is hit, using shade for the color.
 func renderOnWall(shape *objects.Sphere, shade func(hit *objects.Intersection, ray *objects.Ray) core.Color) *core.Canvas {
 	const pixels = 500
 	const wallZ, wallSize = 10.0, 7.0
