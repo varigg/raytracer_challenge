@@ -7,7 +7,7 @@ import (
 	"github.com/varigg/raytracer-challenge/pkg/shader"
 )
 
-var sinkColor *core.Color
+var sinkColor core.Color
 
 func BenchmarkLighting(b *testing.B) {
 	m := shader.NewMaterial()

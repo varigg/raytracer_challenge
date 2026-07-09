@@ -12,7 +12,7 @@ type Material struct {
 
 func NewMaterial() *Material {
 	m := &Material{
-		Color:     *core.NewColor(1, 1, 1),
+		Color:     core.NewColor(1, 1, 1),
 		Ambient:   0.1,
 		Diffuse:   0.9,
 		Specular:  0.9,

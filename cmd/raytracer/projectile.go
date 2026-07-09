@@ -106,7 +106,7 @@ func tick(p projectile, env environment) projectile {
 	}
 }
 
-func DrawSquare(canvas *core.Canvas, x, y int, color *core.Color) {
+func DrawSquare(canvas *core.Canvas, x, y int, color core.Color) {
 	canvas.Set(x, y, color)
 	canvas.Set(x+1, y, color)
 	canvas.Set(x-1, y, color)

@@ -31,12 +31,12 @@ func NewCanvas(x, y int) *Canvas {
 	return &c
 }
 
-func (c *Canvas) Get(x, y int) *Color {
-	return &c.pixels[x][y]
+func (c *Canvas) Get(x, y int) Color {
+	return c.pixels[x][y]
 }
 
-func (c *Canvas) Set(x, y int, color *Color) {
-	c.pixels[x][y] = *color
+func (c *Canvas) Set(x, y int, color Color) {
+	c.pixels[x][y] = color
 }
 
 func (c *Canvas) ToPPM(w io.Writer) error {
