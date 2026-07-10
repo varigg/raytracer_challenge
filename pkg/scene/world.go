@@ -26,7 +26,7 @@ func NewDefaultWorld() *World {
 	// Outer sphere (book default)
 	outerSphere := objects.NewSphere()
 	m := shader.NewMaterial()
-	m.Color = *core.NewColor(.8, 1, .6)
+	m.Color = core.NewColor(.8, 1, .6)
 	m.Diffuse = .7
 	m.Specular = .2
 	outerSphere.Material = m
@@ -52,11 +52,11 @@ func (w *World) Intersect(ray *objects.Ray) []objects.Intersection {
 	return xs
 }
 
-func (w *World) ShadeHit(comps *Computations) *core.Color {
+func (w *World) ShadeHit(comps *Computations) core.Color {
 	return w.Light.Lighting(comps.Object.GetMaterial(), comps.Point, comps.EyeV, comps.NormalV)
 }
 
-func (w *World) ColorAt(ray *objects.Ray) *core.Color {
+func (w *World) ColorAt(ray *objects.Ray) core.Color {
 	intersections := w.Intersect(ray)
 	hit := objects.Hit(intersections)
 	if hit == nil {

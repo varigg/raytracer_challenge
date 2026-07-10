@@ -9,7 +9,7 @@ import (
 
 var (
 	sinkIntersections []objects.Intersection
-	sinkNormal        *core.Tuple
+	sinkNormal        core.Tuple
 )
 
 func BenchmarkSphereIntersect(b *testing.B) {

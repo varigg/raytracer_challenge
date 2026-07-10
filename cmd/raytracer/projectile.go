@@ -49,7 +49,7 @@ var projectileGraphCmd = &cobra.Command{
 			gravity: core.NewVectorFromString(gravity),
 			wind:    core.NewVectorFromString(wind),
 		}
-		positions := make([]*core.Tuple, 0)
+		positions := make([]core.Tuple, 0)
 		maxX, maxY := 0.0, 0.0
 		positions = append(positions, p.position)
 		for p.position.Y > 0 {
@@ -75,13 +75,13 @@ var projectileGraphCmd = &cobra.Command{
 }
 
 type projectile struct {
-	position *core.Tuple
-	velocity *core.Tuple
+	position core.Tuple
+	velocity core.Tuple
 }
 
 type environment struct {
-	gravity *core.Tuple
-	wind    *core.Tuple
+	gravity core.Tuple
+	wind    core.Tuple
 }
 
 func init() {
@@ -106,7 +106,7 @@ func tick(p projectile, env environment) projectile {
 	}
 }
 
-func DrawSquare(canvas *core.Canvas, x, y int, color *core.Color) {
+func DrawSquare(canvas *core.Canvas, x, y int, color core.Color) {
 	canvas.Set(x, y, color)
 	canvas.Set(x+1, y, color)
 	canvas.Set(x-1, y, color)

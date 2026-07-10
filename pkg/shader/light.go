@@ -7,11 +7,11 @@ import (
 )
 
 type Light struct {
-	Position  *core.Tuple
-	Intensity *core.Color
+	Position  core.Tuple
+	Intensity core.Color
 }
 
-func NewLight(position *core.Tuple, color *core.Color) *Light {
+func NewLight(position core.Tuple, color core.Color) *Light {
 	l := &Light{
 		Position:  position,
 		Intensity: color,
@@ -19,12 +19,12 @@ func NewLight(position *core.Tuple, color *core.Color) *Light {
 	return l
 }
 
-func (l *Light) Lighting(m *Material, point, eyeV, normalV *core.Tuple) *core.Color {
+func (l *Light) Lighting(m *Material, point, eyeV, normalV core.Tuple) core.Color {
 	effectiveColor := m.Color.HadamardProduct(l.Intensity)
 	lightV := l.Position.Subtract(point).Normalize()
 	ambient := effectiveColor.Multiply(m.Ambient)
 	lightDotNormal := lightV.Dot(normalV)
-	var diffuse, specular *core.Color
+	var diffuse, specular core.Color
 	black := core.NewColor(0, 0, 0)
 	if lightDotNormal < 0 {
 		diffuse = black

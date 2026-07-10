@@ -17,7 +17,7 @@ var simpleSceneCmd = &cobra.Command{
 		s := objects.NewSphere()
 		s.SetTransform(core.TranslationMatrix(-0.5, 0, 0).Times(core.ScalingMatrix(1.5, 1.5, 1.5)))
 		mat := shader.NewMaterial()
-		mat.Color = *core.NewColor(1, 0.2, 1)
+		mat.Color = core.NewColor(1, 0.2, 1)
 		s.Material = mat
 
 		world := scene.NewWorld()

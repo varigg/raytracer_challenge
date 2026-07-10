@@ -8,14 +8,14 @@ import (
 )
 
 type Sphere struct {
-	transform *core.Matrix
+	transform core.Matrix
 	// Transform.Invert() is used for calculating every hit.
 	// Since it is static we dont need to recompute it every time.
-	invert   *core.Matrix
+	invert   core.Matrix
 	Material *shader.Material
 }
 
-var center *core.Tuple = core.NewPoint(0, 0, 0)
+var center = core.NewPoint(0, 0, 0)
 
 func NewSphere() *Sphere {
 	idInv := core.Identity(4).Invert()
@@ -47,21 +47,21 @@ func (s *Sphere) Intersect(ray *Ray) []Intersection {
 	return xs
 }
 
-func (s *Sphere) SetTransform(m *core.Matrix) error {
+func (s *Sphere) SetTransform(m core.Matrix) error {
 	s.transform = m
 	s.invert = m.Invert()
 	return nil
 }
 
-func (s *Sphere) GetTransform() *core.Matrix {
+func (s *Sphere) GetTransform() core.Matrix {
 	return s.transform
 }
 
-func (s *Sphere) GetInverseTransform() *core.Matrix {
+func (s *Sphere) GetInverseTransform() core.Matrix {
 	return s.invert
 }
 
-func (s *Sphere) NormalAt(worldPoint *core.Tuple) *core.Tuple {
+func (s *Sphere) NormalAt(worldPoint core.Tuple) core.Tuple {
 	objectPoint := s.invert.MultiplyWithTuple(worldPoint)
 	objectNormal := objectPoint.Subtract(center)
 	worldNormal := s.invert.Transpose().MultiplyWithTuple(objectNormal)

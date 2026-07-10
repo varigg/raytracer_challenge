@@ -18,7 +18,7 @@ var sceneCmd = &cobra.Command{
 		floor := objects.NewSphere()
 		floor.SetTransform(core.ScalingMatrix(10, 0.01, 10))
 		floor.Material = shader.NewMaterial()
-		floor.Material.Color = *core.NewColor(1, 0.9, 0.9)
+		floor.Material.Color = core.NewColor(1, 0.9, 0.9)
 		floor.Material.Specular = 0
 		floor.Material.Ambient = 0.1
 		floor.Material.Diffuse = 0.9
@@ -46,7 +46,7 @@ var sceneCmd = &cobra.Command{
 		middle := objects.NewSphere()
 		middle.SetTransform(core.TranslationMatrix(-0.5, 1, 0.5))
 		middle.Material = shader.NewMaterial()
-		middle.Material.Color = *core.NewColor(0.1, 1, 0.5)
+		middle.Material.Color = core.NewColor(0.1, 1, 0.5)
 		middle.Material.Diffuse = 0.7
 		middle.Material.Specular = 0.3
 		middle.Material.Ambient = 0.1
@@ -54,16 +54,16 @@ var sceneCmd = &cobra.Command{
 		right := objects.NewSphere()
 		right.SetTransform(core.TranslationMatrix(1.5, 0.5, -0.5).Times(core.ScalingMatrix(0.5, 0.5, 0.5)))
 		right.Material = shader.NewMaterial()
-		right.Material.Color = *core.NewColor(0.5, 1, 0.1)
+		right.Material.Color = core.NewColor(0.5, 1, 0.1)
 		right.Material.Diffuse = 0.7
 		right.Material.Specular = 0.3
 		right.Material.Ambient = 0.1
 
 		left := objects.NewSphere()
 		left.Material = shader.NewMaterial()
-		left.Material.Color = *core.NewColor(1, 0.8, 0.1)
+		left.Material.Color = core.NewColor(1, 0.8, 0.1)
 		left.SetTransform(core.TranslationMatrix(-1.5, 0.333, -0.75).Times(core.ScalingMatrix(0.33, 0.33, 0.33)))
-		left.Material.Color = *core.NewColor(1, 0.8, 0.1)
+		left.Material.Color = core.NewColor(1, 0.8, 0.1)
 		left.Material.Diffuse = 0.7
 		left.Material.Specular = 0.3
 		left.Material.Ambient = 0.1

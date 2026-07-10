@@ -12,13 +12,13 @@ type Camera struct {
 	VSize int
 	FOV   float64
 	// Todo: precompute inverse
-	Transform  *core.Matrix
+	Transform  core.Matrix
 	PixelSize  float64
 	HalfWidth  float64
 	HalfHeight float64
 }
 
-func ViewTransform(from, to, up *core.Tuple) *core.Matrix {
+func ViewTransform(from, to, up core.Tuple) core.Matrix {
 	forward := to.Subtract(from).Normalize()
 	left := forward.Cross(up.Normalize())
 	trueUp := left.Cross(forward)

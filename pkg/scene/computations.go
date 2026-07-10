@@ -6,12 +6,12 @@ import (
 )
 
 type Computations struct {
-	T      float64
-	Object objects.Intersecter
-	Point  *core.Tuple
-	EyeV   *core.Tuple
-	NormalV *core.Tuple
-	Inside bool
+	T       float64
+	Object  objects.Intersecter
+	Point   core.Tuple
+	EyeV    core.Tuple
+	NormalV core.Tuple
+	Inside  bool
 }
 
 func PrepareComputations(i *objects.Intersection, ray *objects.Ray) *Computations {

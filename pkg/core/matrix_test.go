@@ -9,7 +9,7 @@ import (
 )
 
 func TestCreateMatrix2(t *testing.T) {
-	m := *core.NewMatrix([][]float64{
+	m := core.NewMatrix([][]float64{
 		{-3, 5},
 		{1, -2},
 	})
@@ -20,7 +20,7 @@ func TestCreateMatrix2(t *testing.T) {
 }
 
 func TestCreateMatrix3(t *testing.T) {
-	m := *core.NewMatrix([][]float64{
+	m := core.NewMatrix([][]float64{
 		{-3, 5, 0},
 		{1, -2, 7},
 		{0, 1, 1},
@@ -31,7 +31,7 @@ func TestCreateMatrix3(t *testing.T) {
 
 }
 func TestCreateMatrix4(t *testing.T) {
-	m := *core.NewMatrix([][]float64{
+	m := core.NewMatrix([][]float64{
 		{1, 2, 3, 4},
 		{5.5, 6.5, 7.5, 8.5},
 		{9, 10, 11, 12},
@@ -58,7 +58,8 @@ func TestMatrixEquivalency(t *testing.T) {
 	assert.Equal(t, m1, m2)
 
 	data = [][]float64{
-		{1, 2, 3, 4},
+		{1, 2},
+		{3, 4},
 	}
 	m2 = core.NewMatrix(data)
 	assert.NotEqual(t, m1, m2)
@@ -297,7 +298,7 @@ func TestInversion(t *testing.T) {
 	assert.Equal(t, float64(532), m.Determinant())
 	assert.Equal(t, float64(-160), m.Cofactor(2, 3))
 	assert.Equal(t, float64(105), m.Cofactor(3, 2))
-	assert.Equal(t, float64(-160.0/532.0), (*m1)[3][2])
+	assert.Equal(t, float64(-160.0/532.0), m1[3][2])
 
 	expected := core.NewMatrix([][]float64{
 		{0.21805, 0.45113, 0.24060, -0.04511},

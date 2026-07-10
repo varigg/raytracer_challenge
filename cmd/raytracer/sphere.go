@@ -10,7 +10,7 @@ import (
 type pixel struct {
 	X int
 	Y int
-	C *core.Color
+	C core.Color
 }
 
 var sphereShadowCmd = &cobra.Command{
@@ -72,7 +72,7 @@ var sphereCmd = &cobra.Command{
 
 		shape := objects.NewSphere()
 		mat := shader.NewMaterial()
-		mat.Color = *core.NewColor(1, 0.2, 1)
+		mat.Color = core.NewColor(1, 0.2, 1)
 		shape.Material = mat
 		//shape.SetTransform(core.ScalingMatrix(1, 0.5, 1))
 		light := shader.NewLight(core.NewPoint(-10, 10, -10), core.NewColor(1, 1, 1))
