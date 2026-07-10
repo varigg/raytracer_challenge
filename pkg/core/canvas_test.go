@@ -81,3 +81,12 @@ func TestSavePNGWritesFile(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Greater(t, info.Size(), int64(0))
 }
+
+func TestDrawSquareClipsAtCanvasEdge(t *testing.T) {
+	c := core.NewCanvas(4, 4)
+	red := core.NewColor(1, 0, 0)
+	c.DrawSquare(0, 0, red) // must not panic on negative neighbors
+	assert.True(t, c.Get(0, 0).Equals(red))
+	assert.True(t, c.Get(1, 1).Equals(red))
+	assert.True(t, c.Get(2, 2).Equals(core.NewColor(0, 0, 0)))
+}

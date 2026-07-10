@@ -7,7 +7,7 @@ import (
 
 type Computations struct {
 	T       float64
-	Object  objects.Intersecter
+	Object  objects.Object
 	Point   core.Tuple
 	EyeV    core.Tuple
 	NormalV core.Tuple

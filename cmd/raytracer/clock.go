@@ -23,14 +23,11 @@ var clockCmd = &cobra.Command{
 		for range 12 {
 			x = int(current.X*radius + 250)
 			y = int(current.Z*radius + 250)
-			DrawSquare(c, x, y, color)
+			c.DrawSquare(x, y, color)
 
 			current = r.MultiplyWithTuple(current)
 		}
-		if err := c.SavePPM("clock.ppm"); err != nil {
-			return err
-		}
-		return c.SavePNG("clock.png")
+		return saveCanvas(c, "clock.png")
 	},
 }
 

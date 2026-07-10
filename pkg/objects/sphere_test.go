@@ -72,11 +72,10 @@ func TestIntersectSetsObject(t *testing.T) {
 
 func TestTransform(t *testing.T) {
 	s := objects.NewSphere()
-	assert.Equal(t, core.Identity(4), s.GetTransform())
+	assert.Equal(t, core.Identity(4), s.Transform())
 	m := core.TranslationMatrix(2, 3, 4)
-	err := s.SetTransform(m)
-	assert.Nil(t, err)
-	assert.Equal(t, m, s.GetTransform())
+	s.SetTransform(m)
+	assert.Equal(t, m, s.Transform())
 }
 
 func TestIntersectScaled(t *testing.T) {
@@ -147,9 +146,9 @@ func TestNormalTranslated(t *testing.T) {
 //	Then s.material = m
 func TestMaterial(t *testing.T) {
 	s := objects.NewSphere()
-	assert.Equal(t, shader.NewMaterial(), s.Material)
+	assert.Equal(t, shader.NewMaterial(), s.Material())
 	m := shader.NewMaterial()
 	m.Ambient = 1
-	s.Material = m
-	assert.Equal(t, m, s.Material)
+	s.SetMaterial(m)
+	assert.Equal(t, m, s.Material())
 }
