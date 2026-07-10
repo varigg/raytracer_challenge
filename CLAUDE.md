@@ -25,3 +25,11 @@ Code is layered bottom-up across four packages, each depending only on the ones 
 - `cmd/raytracer` — Cobra commands, one per book chapter/scene, each hand-assembling a `World`/`Camera` and writing an image file. `root.go` wires commands together; `main.go` just calls `raytracer.Execute()`.
 
 The render pipeline for any scene command: build spheres with materials/transforms → add them to a `World` with a `Light` → build a `Camera` and set its transform via `camera.SetTransform(scene.ViewTransform(...))` → `camera.Render(world)` produces a `Canvas` → save to PNG/PPM. Ray/object intersection always transforms the incoming ray into object space via the object's precomputed inverse transform (see `Sphere.invert`) rather than transforming the object's geometry.
+
+## Conventions
+
+Pull requests in this repository are integrated with regular merge commits, not
+squash merges. The individual conventional commits carry review-worthy detail
+(measured speedups in `perf:` bodies, bug rationale in `fix:` bodies) that a
+squash would discard. This deliberately overrides the global squash-merge
+convention in the user-level CLAUDE.md.
