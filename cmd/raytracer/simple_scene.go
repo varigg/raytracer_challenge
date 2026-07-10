@@ -13,7 +13,7 @@ import (
 var simpleSceneCmd = &cobra.Command{
 	Use:   "simple-scene",
 	Short: "draws a simple scene with two colored spheres",
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		s := objects.NewSphere()
 		s.SetTransform(core.TranslationMatrix(-0.5, 0, 0).Times(core.ScalingMatrix(1.5, 1.5, 1.5)))
 		mat := shader.NewMaterial()
@@ -29,7 +29,7 @@ var simpleSceneCmd = &cobra.Command{
 			core.NewPoint(0, 0, 0),
 			core.NewVector(0, 1, 0))
 		canvas := camera.Render(world)
-		canvas.SavePNG("simple_scene.png")
+		return canvas.SavePNG("simple_scene.png")
 	},
 }
 

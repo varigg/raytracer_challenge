@@ -1,7 +1,6 @@
 package core
 
 import (
-	"fmt"
 	"math"
 )
 
@@ -31,19 +30,6 @@ func NewEmptyMatrix(size int) *Matrix {
 
 func (m *Matrix) Size() int {
 	return len(*m)
-}
-
-// Identify4 returns an identity matrix of size 4
-
-func Identity4() *Matrix {
-	data := [][]float64{
-		{1, 0, 0, 0},
-		{0, 1, 0, 0},
-		{0, 0, 1, 0},
-		{0, 0, 0, 1},
-	}
-	m := Matrix(data)
-	return &m
 }
 
 func Identity(size int) *Matrix {
@@ -259,16 +245,4 @@ func Shearing(xy, xz, yx, yz, zx, zy float64) *Matrix {
 	(*result)[2][2] = 1
 	(*result)[3][3] = 1
 	return result
-}
-
-func (m *Matrix) Print() {
-	for i := 0; i < m.Size(); i++ {
-		for j := 0; j < m.Size(); j++ {
-			fmt.Print((*m)[i][j])
-			if j < m.Size()-1 {
-				fmt.Print(" ")
-			}
-		}
-		fmt.Println()
-	}
 }

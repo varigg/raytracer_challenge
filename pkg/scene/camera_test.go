@@ -12,7 +12,7 @@ import (
 func TestTransform(t *testing.T) {
 	// Default orientation
 	m := scene.ViewTransform(core.NewPoint(0, 0, 0), core.NewPoint(0, 0, -1), core.NewVector(0, 1, 0))
-	assert.Equal(t, core.Identity4(), m)
+	assert.Equal(t, core.Identity(4), m)
 	// backwards
 	m = scene.ViewTransform(core.NewPoint(0, 0, 0), core.NewPoint(0, 0, 1), core.NewVector(0, 1, 0))
 	assert.Equal(t, core.ScalingMatrix(-1, 1, -1), m)
@@ -36,7 +36,7 @@ func TestNewCamera(t *testing.T) {
 	assert.Equal(t, 160, c.HSize)
 	assert.Equal(t, 120, c.VSize)
 	assert.Equal(t, math.Pi/2, c.FOV)
-	assert.Equal(t, core.Identity4(), c.Transform)
+	assert.Equal(t, core.Identity(4), c.Transform)
 }
 func TestPixelSize(t *testing.T) {
 	c := scene.NewCamera(200, 125, math.Pi/2)

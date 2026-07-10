@@ -14,7 +14,7 @@ var sceneCmd = &cobra.Command{
 	Use:     "scene",
 	Aliases: []string{"chapter7"},
 	Short:   "draws a scene using the camera",
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		floor := objects.NewSphere()
 		floor.SetTransform(core.ScalingMatrix(10, 0.01, 10))
 		floor.Material = shader.NewMaterial()
@@ -77,8 +77,7 @@ var sceneCmd = &cobra.Command{
 			core.NewPoint(0, 1, 0),
 			core.NewVector(0, 1, 0))
 		canvas := camera.Render(world)
-		canvas.SavePNG("scene.png")
-
+		return canvas.SavePNG("scene.png")
 	},
 }
 
