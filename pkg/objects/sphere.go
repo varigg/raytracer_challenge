@@ -9,19 +9,19 @@ import (
 
 type Sphere struct {
 	transform core.Matrix
-	// invert caches transform.Invert(); every intersection needs it.
-	invert   core.Matrix
-	material *shader.Material
+	// invert and invTranspose cache transform.Invert() and its transpose;
+	// they are read on every intersection / normal computation.
+	invert       core.Matrix
+	invTranspose core.Matrix
+	material     *shader.Material
 }
 
 var center = core.NewPoint(0, 0, 0)
 
 func NewSphere() *Sphere {
-	return &Sphere{
-		transform: core.Identity(4),
-		invert:    core.Identity(4).Invert(),
-		material:  shader.NewMaterial(),
-	}
+	s := &Sphere{material: shader.NewMaterial()}
+	s.SetTransform(core.Identity(4))
+	return s
 }
 func (s *Sphere) Intersect(ray *Ray) []Intersection {
 	xs := make([]Intersection, 0)
@@ -47,6 +47,7 @@ func (s *Sphere) Intersect(ray *Ray) []Intersection {
 func (s *Sphere) SetTransform(m core.Matrix) {
 	s.transform = m
 	s.invert = m.Invert()
+	s.invTranspose = s.invert.Transpose()
 }
 
 func (s *Sphere) Transform() core.Matrix         { return s.transform }
@@ -57,7 +58,7 @@ func (s *Sphere) SetMaterial(m *shader.Material) { s.material = m }
 func (s *Sphere) NormalAt(worldPoint core.Tuple) core.Tuple {
 	objectPoint := s.invert.MultiplyWithTuple(worldPoint)
 	objectNormal := objectPoint.Subtract(center)
-	worldNormal := s.invert.Transpose().MultiplyWithTuple(objectNormal)
+	worldNormal := s.invTranspose.MultiplyWithTuple(objectNormal)
 	worldNormal.W = 0
 	return worldNormal.Normalize()
 

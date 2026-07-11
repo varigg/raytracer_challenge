@@ -8,6 +8,22 @@ import (
 	"github.com/varigg/raytracer-challenge/pkg/core"
 )
 
+func TestNewMatrixPanicsOnNonSquareInput(t *testing.T) {
+	assert.Panics(t, func() {
+		core.NewMatrix([][]float64{{1, 2, 3}, {4, 5, 6}})
+	})
+}
+
+func TestInvertPanicsOnSingularMatrix(t *testing.T) {
+	singular := core.NewMatrix([][]float64{
+		{0, 0, 0, 0},
+		{1, 2, 3, 4},
+		{5, 6, 7, 8},
+		{9, 10, 11, 12},
+	})
+	assert.Panics(t, func() { singular.Invert() })
+}
+
 func TestCreateMatrix2(t *testing.T) {
 	m := core.NewMatrix([][]float64{
 		{-3, 5},

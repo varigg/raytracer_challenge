@@ -36,8 +36,8 @@ var sceneCmd = &cobra.Command{
 		world.Light = shader.NewLight(core.NewPoint(-10, 10, -10), core.NewColor(1, 1, 1))
 
 		camera := scene.NewCamera(400, 200, math.Pi/3)
-		camera.Transform = scene.ViewTransform(core.NewPoint(0, 1.5, -5),
-			core.NewPoint(0, 1, 0), core.NewVector(0, 1, 0))
+		camera.SetTransform(scene.ViewTransform(core.NewPoint(0, 1.5, -5),
+			core.NewPoint(0, 1, 0), core.NewVector(0, 1, 0)))
 		return saveCanvas(camera.Render(world), "scene.png")
 	},
 }
